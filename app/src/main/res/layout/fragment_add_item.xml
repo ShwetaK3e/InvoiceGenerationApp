@@ -1,0 +1,155 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.store.pawan.pawanstore.AddItemFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/instrument_layout"
+        android:layout_alignParentBottom="true">
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/header_layout"
+            android:id="@+id/list_instrument"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"/>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/header_layout">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="1"
+        >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
+            android:layout_height="wrap_content">
+
+           <!-- <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_search"
+                android:scaleType="fitCenter"
+                android:id="@+id/search_list"
+                android:padding="10dp"
+                android:background="@android:color/transparent"/>-->
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="0.6"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ADD ITEMS"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:textColor="@color/colorPrimary"
+                    android:id="@+id/title"/>
+
+               <!-- <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="ITEM NAME"
+                    android:typeface="serif"
+                    android:id="@+id/search_text"
+                    android:textColor="@color/colorPrimary"
+                    android:textColorHint="@color/colorPrimary"/>-->
+
+
+            </FrameLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
+            android:layout_height="wrap_content"
+            android:gravity="right">
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_list"
+                android:scaleType="fitCenter"
+                android:id="@+id/review_list"
+                android:padding="10dp"
+                android:background="@android:color/transparent"/>
+        </LinearLayout>
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/colorPrimary" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/colorPrimary"/>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header_layout"
+        android:id="@+id/list_item"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"/>
+
+
+
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/bg_circle_color_primary"
+        android:src="@drawable/ic_plus"
+        android:scaleType="fitCenter"
+        app:fabSize="mini"
+        android:padding="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="40dp"/>
+
+
+
+
+
+</RelativeLayout>
