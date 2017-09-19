@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:background="@color/translucent_bg"
+    android:gravity="center">
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/bg_dialog"
+        android:weightSum="1">
+
+
+        <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewBold
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:gravity="center"
+            android:text="ITEMS ON BILL"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimary"/>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="5dp"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="5dp"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/final_list"
+            android:layout_margin="5dp"
+            android:elevation="2dp"
+            android:background="@color/white">
+
+        </android.support.v7.widget.RecyclerView>
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/total_layout"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="@color/white">
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary"
+                android:layout_marginBottom="5dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary"
+                android:layout_marginBottom="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1"
+                android:gravity="center"
+                android:background="@color/white"
+                android:padding="5dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    android:weightSum="1">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="0.2"
+                        android:layout_height="match_parent"
+                        android:gravity="center">
+
+
+                    </LinearLayout>
+
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="0.3"
+                        android:layout_height="match_parent"
+                        android:gravity="left|center_vertical">
+
+
+
+
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="0.2"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="0.3"
+                        android:layout_height="match_parent"
+                        android:gravity="center">
+
+                        <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewBold
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/amount_background"
+                            android:hint="5000"
+                            android:textColor="@color/black"
+                            android:padding="5dp"
+                            android:gravity="center"
+                            android:id="@+id/total_price"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="0.33"
+                    android:layout_height="match_parent"
+                    android:padding="5dp">
+
+                    <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewBold
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="500000"
+                        android:padding="5dp"
+                        android:background="@drawable/bg_rounded_square_holder"
+                        android:id="@+id/total_sgst"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="0.33"
+                    android:layout_height="match_parent"
+                    android:padding="5dp">
+
+                    <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewBold
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="500000"
+                        android:padding="5dp"
+                        android:background="@drawable/bg_rounded_square_holder"
+                        android:id="@+id/total_cgst"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="0.33"
+                    android:layout_height="match_parent"
+                    android:padding="5dp">
+
+                    <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewBold
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="500000"
+                        android:padding="5dp"
+                        android:background="@drawable/bg_rounded_square_holder"
+
+                        android:id="@+id/total_original"/>
+
+                </LinearLayout>
+
+
+
+
+
+
+
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+
+
+
+
+
+</RelativeLayout>

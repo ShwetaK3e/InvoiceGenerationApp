@@ -2,35 +2,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    tools:context="com.store.pawan.pawanstore.AddItemFragment">
+    tools:context="com.store.pawan.pawanstore.fragment.AddItemFragment">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/instrument_layout"
-        android:layout_alignParentBottom="true">
 
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/header_layout"
-            android:id="@+id/list_instrument"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"/>
-
-
-    </LinearLayout>
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/header_layout">
+        android:id="@+id/header_layout"
+        android:layout_alignParentTop="true">
 
 
 
@@ -39,36 +22,37 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:weightSum="1"
-        >
+        android:weightSum="1">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="0.2"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center">
 
-           <!-- <ImageButton
+
+            <ImageButton
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/ic_search"
+                android:src="@drawable/ic_refresh"
                 android:scaleType="fitCenter"
-                android:id="@+id/search_list"
+                android:id="@+id/refresh"
                 android:padding="10dp"
-                android:background="@android:color/transparent"/>-->
+                android:background="@android:color/transparent"/>
 
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="0.6"
             android:layout_height="wrap_content"
             android:gravity="center">
 
-            <FrameLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="ADD ITEMS"
                     android:gravity="center"
@@ -78,32 +62,20 @@
                     android:layout_gravity="center"
                     android:textColor="@color/colorPrimary"
                     android:id="@+id/title"/>
-
-               <!-- <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:hint="ITEM NAME"
-                    android:typeface="serif"
-                    android:id="@+id/search_text"
-                    android:textColor="@color/colorPrimary"
-                    android:textColorHint="@color/colorPrimary"/>-->
-
-
-            </FrameLayout>
+            </LinearLayout>
 
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="0.2"
             android:layout_height="wrap_content"
-            android:gravity="right">
+            android:gravity="center">
             <ImageButton
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_list"
                 android:scaleType="fitCenter"
-                android:id="@+id/review_list"
+                android:id="@+id/show_bill"
                 android:padding="10dp"
                 android:background="@android:color/transparent"/>
         </LinearLayout>
@@ -124,29 +96,48 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@id/header_layout">
+
+    <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewItalic
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/header_layout"
-        android:id="@+id/list_item"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"/>
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:text="No Item has been added to the list yet."
+        android:id="@+id/no_item_text"
+        android:gravity="center"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/item_list" />
 
 
+</FrameLayout>
 
-
-
-    <android.support.design.widget.FloatingActionButton
+    <ImageButton
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:background="@drawable/bg_circle_color_primary"
         android:src="@drawable/ic_plus"
         android:scaleType="fitCenter"
-        app:fabSize="mini"
         android:padding="10dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="40dp"/>
+        android:id="@+id/add_item"
+        android:translationY="-40dp"
+        android:layout_marginRight="40dp"
+        android:elevation="5dp"/>
+
+
+
+
+
+
 
 
 
