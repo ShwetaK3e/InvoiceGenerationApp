@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/translucent_bg">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dialog"
+        android:orientation="vertical"
+        android:padding="5dp"
+        android:layout_gravity="center"
+        android:layout_margin="40dp"
+        android:layout_alignParentTop="true">
+
+        <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewBold
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="ADD NEW ITEM"
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimary"
+            android:layout_margin="5dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorPrimary" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:layout_margin="5dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@color/colorPrimary"
+                android:padding="2dp">
+
+                <ImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_guitar"
+                    android:background="@color/white"
+                    android:padding="8dp"
+                    android:elevation="5dp"
+                    android:scaleType="fitCenter"
+                    android:id="@+id/item_type_img"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="0.8"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical">
+
+                <com.store.pawan.pawanstore.CustomWidgets.PStoreEditTextBold
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:text="Music Store"
+                    android:gravity="start"
+                    android:textColor="@color/black"
+                    android:paddingBottom="5dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:id="@+id/item_type_name"/>
+
+                <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewBold
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="10sp"
+                    android:text=""
+                    android:gravity="start"
+                    android:textColor="@color/black"
+                    android:padding="5dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"/>
+
+
+            </LinearLayout>
+
+
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/white"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:id="@+id/load_count_layout">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:padding="2dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight=".2"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:id="@+id/dec_sell_count_layout">
+
+                    <ImageButton
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/bg_circle_maroon"
+                        android:src="@drawable/ic_minus"
+                        android:scaleType="fitCenter"
+                        android:padding="5dp"
+                        android:id="@+id/dec_sell_count"/>
+                </LinearLayout>
+
+
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight=".6"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal">
+
+                    <com.store.pawan.pawanstore.CustomWidgets.PStoreEditTextBold
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_minus"
+                        android:scaleType="fitCenter"
+                        android:padding="5dp"
+                        android:id="@+id/sell_count"
+                        android:hint="Quantity"
+                        android:digits="0123456789"
+                        android:gravity="center"
+                        android:textColor="#00ff00"
+                        android:textSize="18sp"
+                        android:inputType="number"
+                        android:background="@drawable/bg_holder"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight=".2"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:id="@+id/inc_sell_count_layout">
+
+                    <ImageButton
+                        android:layout_width="25dp"
+                        android:layout_height="24dp"
+                        android:background="@drawable/bg_circle_green"
+                        android:src="@drawable/ic_plus"
+                        android:scaleType="fitCenter"
+                        android:padding="5dp"
+                        android:id="@+id/inc_sell_count"/>
+                </LinearLayout>
+
+
+
+
+
+
+
+            </LinearLayout>
+
+
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:weightSum="1"
+            android:gravity="start">
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight=".2"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewNormal
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Rs."
+                    android:textSize="15sp"
+                    android:textColor="@color/black"/>
+
+
+            </LinearLayout>
+
+
+
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight=".6"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal">
+
+                    <com.store.pawan.pawanstore.CustomWidgets.PStoreEditTextBold
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_minus"
+                        android:scaleType="fitCenter"
+                        android:padding="5dp"
+                        android:hint="Price"
+                        android:digits="0123456789."
+                        android:gravity="center"
+                        android:textColor="#00ff00"
+                        android:textSize="18sp"
+                        android:inputType="number"
+                        android:id="@+id/item_price"
+                        android:background="@drawable/bg_holder"/>
+                </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:weightSum="1"
+            android:gravity="end">
+
+
+
+
+
+
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight=".6"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal">
+
+                <com.store.pawan.pawanstore.CustomWidgets.PStoreEditTextBold
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_minus"
+                    android:scaleType="fitCenter"
+                    android:padding="5dp"
+                    android:hint="GST Rate"
+                    android:digits="0123456789"
+                    android:gravity="center"
+                    android:textColor="#00ff00"
+                    android:textSize="18sp"
+                    android:inputType="number"
+                    android:id="@+id/item_gst"
+                    android:background="@drawable/bg_holder"/>
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight=".2"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewNormal
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="%"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"/>
+
+
+            </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:background="@color/colorPrimaryLight"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:padding="15dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="0.45"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:text="CANCEL"
+                    android:textSize="15sp"
+                    android:layout_gravity="center"
+                    android:minWidth="2dp"
+                    android:minHeight="2dp"
+                    android:typeface="serif"
+                    android:id="@+id/cancel"
+                    android:textColor="@color/colorPrimary"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="0.1"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_separator"
+                    android:layout_gravity="center"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="0.45"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:text="ADD"
+                    android:textColor="@color/light_grey"
+                    android:textSize="15sp"
+                    android:layout_gravity="center"
+                    android:minWidth="2dp"
+                    android:minHeight="2dp"
+                    android:typeface="serif"
+                    android:id="@+id/add"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+
+
+        </LinearLayout>
+
+
+    <!--<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_gravity="bottom"
+        android:background="@color/white"
+        android:id="@+id/type_of_item_layout"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:padding="10dp"
+            android:background="@android:color/transparent"
+            android:id="@+id/instument_list"
+            ></android.support.v7.widget.RecyclerView>
+
+
+    </LinearLayout>
+
+
+
+-->
+
+
+
+
+</RelativeLayout>

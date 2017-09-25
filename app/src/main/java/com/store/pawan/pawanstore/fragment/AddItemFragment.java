@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +25,6 @@ import com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewItalic;
 import com.store.pawan.pawanstore.R;
 import com.store.pawan.pawanstore.model.EntryItem;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -125,7 +122,7 @@ public class AddItemFragment extends Fragment {
         add_item_dialog=new Dialog(getActivity(),R.style.MyDialogTheme);
         add_item_dialog.getWindow().getAttributes().windowAnimations=R.style.DialogAnimation;
         add_item_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        add_item_dialog.setContentView(R.layout.entry_dialog);
+        add_item_dialog.setContentView(R.layout.bill_entry_dialog);
         item_no=items.size();
 
 
@@ -326,7 +323,7 @@ public class AddItemFragment extends Fragment {
         final_list_dialog=new Dialog(getActivity(),R.style.MyDialogTheme);
         final_list_dialog.getWindow().getAttributes().windowAnimations=R.style.DialogAnimation1;
         final_list_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        final_list_dialog.setContentView(R.layout.final_list_dialog);
+        final_list_dialog.setContentView(R.layout.final_bill_dialog);
 
         final  FinalListHolder holder=new FinalListHolder(final_list_dialog);
         FinaltemAdapter finaltemAdapter=new FinaltemAdapter(getContext(),items);
