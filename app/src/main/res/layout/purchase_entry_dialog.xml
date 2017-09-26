@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="ADD NEW ITEM"
+            android:text="ADD NEW ACCOUNT"
             android:textSize="18sp"
             android:textColor="@color/colorPrimary"
             android:layout_margin="5dp"/>
@@ -74,16 +74,17 @@
                 android:layout_marginEnd="10dp"
                 android:orientation="vertical">
 
-                <com.store.pawan.pawanstore.CustomWidgets.PStoreEditTextBold
+                <com.store.pawan.pawanstore.CustomWidgets.PStoreEditTextItalic
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
-                    android:text="Music Store"
+                    android:hint="ACCOUNT NAME"
                     android:gravity="start"
                     android:textColor="@color/black"
                     android:paddingBottom="5dp"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:background="@android:color/transparent"
                     android:id="@+id/item_type_name"/>
 
                 <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewBold
@@ -129,17 +130,18 @@
                     android:layout_width="0dp"
                     android:layout_weight=".2"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:id="@+id/dec_sell_count_layout">
+                    android:gravity="center">
 
-                    <ImageButton
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:background="@drawable/bg_circle_maroon"
-                        android:src="@drawable/ic_minus"
-                        android:scaleType="fitCenter"
-                        android:padding="5dp"
-                        android:id="@+id/dec_sell_count"/>
+                    <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewNormal
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Rs."
+                        android:textSize="15sp"
+                        android:textColor="@color/black"/>
+
+
+
                 </LinearLayout>
 
 
@@ -159,7 +161,7 @@
                         android:scaleType="fitCenter"
                         android:padding="5dp"
                         android:id="@+id/sell_count"
-                        android:hint="Quantity"
+                        android:hint="Net Amount"
                         android:digits="0123456789"
                         android:gravity="center"
                         android:textColor="#00ff00"
@@ -173,16 +175,9 @@
                     android:layout_weight=".2"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:id="@+id/inc_sell_count_layout">
+                    >
 
-                    <ImageButton
-                        android:layout_width="25dp"
-                        android:layout_height="24dp"
-                        android:background="@drawable/bg_circle_green"
-                        android:src="@drawable/ic_plus"
-                        android:scaleType="fitCenter"
-                        android:padding="5dp"
-                        android:id="@+id/inc_sell_count"/>
+
                 </LinearLayout>
 
 
@@ -215,17 +210,25 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight=".2"
+                android:layout_weight=".5"
                 android:layout_height="match_parent"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_margin="2dp">
 
-                <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewNormal
+                <com.store.pawan.pawanstore.CustomWidgets.PStoreEditTextBold
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_minus"
+                    android:scaleType="fitCenter"
+                    android:padding="5dp"
+                    android:hint="Price"
+                    android:textColorHint="@android:color/holo_green_dark"
+                    android:digits="0123456789."
                     android:gravity="center"
-                    android:text="Rs."
-                    android:textSize="15sp"
-                    android:textColor="@color/black"/>
+                    android:textColor="#00ff00"
+                    android:textSize="18sp"
+                    android:inputType="number"
+                    android:background="@drawable/bg_holder"/>
 
 
             </LinearLayout>
@@ -236,9 +239,10 @@
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_weight=".6"
+                    android:layout_weight=".5"
                     android:layout_height="match_parent"
                     android:gravity="center"
+                    android:layout_margin="2dp"
                     android:layout_gravity="center_horizontal">
 
                     <com.store.pawan.pawanstore.CustomWidgets.PStoreEditTextBold
@@ -248,12 +252,12 @@
                         android:scaleType="fitCenter"
                         android:padding="5dp"
                         android:hint="Price"
+                        android:textColorHint="@color/red"
                         android:digits="0123456789."
                         android:gravity="center"
                         android:textColor="#00ff00"
                         android:textSize="18sp"
                         android:inputType="number"
-                        android:id="@+id/item_price"
                         android:background="@drawable/bg_holder"/>
                 </LinearLayout>
 
@@ -289,6 +293,24 @@
 
 
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight=".2"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <ImageButton
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/bg_circle_green_ring"
+                    android:src="@drawable/ic_tick"
+                    android:scaleType="fitCenter"
+                    android:padding="5dp"
+                    android:id="@+id/dec_sell_count"/>
+
+
+
+            </LinearLayout>
 
 
 
@@ -325,13 +347,14 @@
                 android:layout_height="match_parent"
                 android:gravity="center">
 
-                <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewNormal
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="%"
-                    android:textSize="15sp"
-                    android:textColor="@color/black"/>
+                <ImageButton
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/bg_circle_red_ring"
+                    android:src="@drawable/ic_tick"
+                    android:scaleType="fitCenter"
+                    android:padding="5dp"
+                   />
 
 
             </LinearLayout>

@@ -135,7 +135,7 @@
                     <ImageButton
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:background="@drawable/bg_circle_maroon"
+                        android:background="@drawable/bg_circle_red"
                         android:src="@drawable/ic_minus"
                         android:scaleType="fitCenter"
                         android:padding="5dp"
