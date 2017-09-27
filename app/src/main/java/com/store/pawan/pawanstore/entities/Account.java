@@ -19,12 +19,15 @@ public class Account {
 
     public  float amount;
 
+    public float  paid_amount;
 
-    public Account(int id, String name, int mode, float amount) {
+
+    public Account(int id, String name, int mode, float amount,float paid_amount) {
         this.id = id;
         this.name = name;
         this.mode = mode;
         this.amount = amount;
+        this.paid_amount=paid_amount;
     }
 
 

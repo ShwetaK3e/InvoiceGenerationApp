@@ -24,6 +24,7 @@
             android:textColor="@color/colorPrimary"
             android:layout_margin="5dp"/>
 
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -85,7 +86,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:background="@android:color/transparent"
-                    android:id="@+id/item_type_name"/>
+                    android:id="@+id/account_name"/>
 
                 <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewBold
                     android:layout_width="match_parent"
@@ -160,7 +161,7 @@
                         android:src="@drawable/ic_minus"
                         android:scaleType="fitCenter"
                         android:padding="5dp"
-                        android:id="@+id/sell_count"
+                        android:id="@+id/net_amnt"
                         android:hint="Net Amount"
                         android:digits="0123456789"
                         android:gravity="center"
@@ -221,13 +222,15 @@
                     android:src="@drawable/ic_minus"
                     android:scaleType="fitCenter"
                     android:padding="5dp"
-                    android:hint="Price"
+                    android:hint="Returned"
+
                     android:textColorHint="@android:color/holo_green_dark"
                     android:digits="0123456789."
                     android:gravity="center"
-                    android:textColor="#00ff00"
+                    android:textColor="android:color/holo_green_dark"
                     android:textSize="18sp"
                     android:inputType="number"
+                    android:id="@+id/ret_amnt"
                     android:background="@drawable/bg_holder"/>
 
 
@@ -251,13 +254,14 @@
                         android:src="@drawable/ic_minus"
                         android:scaleType="fitCenter"
                         android:padding="5dp"
-                        android:hint="Price"
+                        android:hint="Remaining"
                         android:textColorHint="@color/red"
                         android:digits="0123456789."
                         android:gravity="center"
-                        android:textColor="#00ff00"
+                        android:textColor="@color/red"
                         android:textSize="18sp"
                         android:inputType="number"
+                        android:id="@+id/remain_amnt"
                         android:background="@drawable/bg_holder"/>
                 </LinearLayout>
 
@@ -297,7 +301,8 @@
                 android:layout_width="0dp"
                 android:layout_weight=".2"
                 android:layout_height="match_parent"
-                android:gravity="center">
+                android:gravity="center"
+                android:id="@+id/dec_amnt">
 
                 <ImageButton
                     android:layout_width="25dp"
@@ -306,7 +311,7 @@
                     android:src="@drawable/ic_tick"
                     android:scaleType="fitCenter"
                     android:padding="5dp"
-                    android:id="@+id/dec_sell_count"/>
+                    android:id="@+id/dec_amnt_bnt"/>
 
 
 
@@ -329,13 +334,13 @@
                     android:src="@drawable/ic_minus"
                     android:scaleType="fitCenter"
                     android:padding="5dp"
-                    android:hint="GST Rate"
+                    android:hint="New Amount"
                     android:digits="0123456789"
                     android:gravity="center"
                     android:textColor="#00ff00"
                     android:textSize="18sp"
                     android:inputType="number"
-                    android:id="@+id/item_gst"
+                    android:id="@+id/new_amnt"
                     android:background="@drawable/bg_holder"/>
             </LinearLayout>
 
@@ -345,7 +350,8 @@
                 android:layout_width="0dp"
                 android:layout_weight=".2"
                 android:layout_height="match_parent"
-                android:gravity="center">
+                android:gravity="center"
+                android:id="@+id/inc_amnt">
 
                 <ImageButton
                     android:layout_width="25dp"
@@ -354,6 +360,7 @@
                     android:src="@drawable/ic_tick"
                     android:scaleType="fitCenter"
                     android:padding="5dp"
+                    android:id="@+id/inc_amnt_btn"
                    />
 
 

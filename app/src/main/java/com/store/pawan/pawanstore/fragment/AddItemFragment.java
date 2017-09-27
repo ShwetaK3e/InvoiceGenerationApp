@@ -48,7 +48,7 @@ public class AddItemFragment extends Fragment {
     ImageButton add_item;
 
     //Add Dialog
-    Dialog add_item_dialog;
+    Dialog add_bill_item_dialog;
 
     //Final List
     Dialog final_list_dialog;
@@ -88,7 +88,7 @@ public class AddItemFragment extends Fragment {
         item_list= view.findViewById(R.id.item_list);
         add_item= view.findViewById(R.id.add_item);
         add_item.setOnClickListener(view1 -> {
-            if(add_item_dialog==null) {
+            if(add_bill_item_dialog==null) {
                 showAddItemDialog(new EntryItem());
             }
 
@@ -101,7 +101,7 @@ public class AddItemFragment extends Fragment {
         item_list.setLayoutManager(new GridLayoutManager(getContext(),1));
 
         itemAdapter=new ItemAdapter(getContext(), items, pos1 -> {
-            if(add_item_dialog==null){
+            if(add_bill_item_dialog==null){
                 showAddItemDialog(items.get(pos1));
             }
         });
@@ -119,14 +119,14 @@ public class AddItemFragment extends Fragment {
 
 
     void showAddItemDialog(EntryItem item){
-        add_item_dialog=new Dialog(getActivity(),R.style.MyDialogTheme);
-        add_item_dialog.getWindow().getAttributes().windowAnimations=R.style.DialogAnimation;
-        add_item_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        add_item_dialog.setContentView(R.layout.bill_entry_dialog);
+        add_bill_item_dialog=new Dialog(getActivity(),R.style.MyDialogTheme);
+        add_bill_item_dialog.getWindow().getAttributes().windowAnimations=R.style.DialogAnimation;
+        add_bill_item_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        add_bill_item_dialog.setContentView(R.layout.bill_entry_dialog);
         item_no=items.size();
 
 
-        final EntryHolder holder=new EntryHolder(add_item_dialog);
+        final EntryHolder holder=new EntryHolder(add_bill_item_dialog);
         //Observable<CharSequence> item_name_obv= RxTextView.textChanges(holder.item_name);
         Observable<CharSequence> qnty_obv= RxTextView.textChanges(holder.sell_count);
         Observable<CharSequence> price_obv= RxTextView.textChanges(holder.price);
@@ -238,13 +238,13 @@ public class AddItemFragment extends Fragment {
        holder.instrument_list.setAdapter(instrumentAdapter);
 */
        holder.cancel.setOnClickListener(view -> {
-           add_item_dialog.dismiss();
+           add_bill_item_dialog.dismiss();
 
                }
        );
 
        holder.add.setOnClickListener(view -> {
-           add_item_dialog.dismiss();
+           add_bill_item_dialog.dismiss();
            item.setQty(Integer.parseInt(holder.sell_count.getText().toString().trim()));
            item.setPrice(item.getPrice()*item.getQty());
            items.add(item);
@@ -257,8 +257,8 @@ public class AddItemFragment extends Fragment {
        });
 
 
-       add_item_dialog.setOnDismissListener(view->{
-           add_item_dialog=null;
+       add_bill_item_dialog.setOnDismissListener(view->{
+           add_bill_item_dialog=null;
            if(item_no>items.size()) {
                items.add(item);
                itemAdapter.notifyDataSetChanged();
@@ -270,8 +270,8 @@ public class AddItemFragment extends Fragment {
 
            }
        });
-       add_item_dialog.show();
-       add_item_dialog.setCancelable(true);
+       add_bill_item_dialog.show();
+       add_bill_item_dialog.setCancelable(true);
     }
 
 

@@ -26,6 +26,12 @@ public interface AccountDAO {
     @Query("select * from account where mode= :mode")
     List<Account> getAllAccounts(int mode);
 
+    @Query("select paid_amount from account where id=:id")
+    float getPaidAmount(int id);
+
+    @Query("select amount from account where id=:id")
+    float getAmount(int id);
+
     @Delete
     void delete(Account account);
 
