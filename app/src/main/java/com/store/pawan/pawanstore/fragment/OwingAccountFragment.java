@@ -7,7 +7,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,34 +16,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.store.pawan.pawanstore.Adapter.FinaltemAdapter;
 import com.store.pawan.pawanstore.Adapter.ItemAdapter;
-import com.store.pawan.pawanstore.CustomWidgets.PStoreEditTextBold;
-import com.store.pawan.pawanstore.CustomWidgets.PStoreEditTextItalic;
 import com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewItalic;
 import com.store.pawan.pawanstore.R;
 import com.store.pawan.pawanstore.model.EntryItem;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 
 
-public class AddAccountFragment extends Fragment {
+public class OwingAccountFragment extends Fragment {
 
 
 
-    ViewPager accounts_pager;
-    TabLayout accounts_tab;
-
-    PStoreTextViewItalic no_item_text;
-    RecyclerView item_list;
-    ItemAdapter itemAdapter;
 
 
     ImageButton add_item;
@@ -57,8 +45,8 @@ public class AddAccountFragment extends Fragment {
 
     public static List<EntryItem> items=new LinkedList<>();
 
-    public static AddAccountFragment newInstance() {
-        AddAccountFragment fragment = new AddAccountFragment();
+    public static OwingAccountFragment newInstance() {
+        OwingAccountFragment fragment = new OwingAccountFragment();
         return fragment;
     }
 
