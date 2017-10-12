@@ -5,6 +5,7 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import com.store.pawan.pawanstore.DAO.AccountDAO;
 import com.store.pawan.pawanstore.entities.Account;
 
 /**
@@ -18,9 +19,9 @@ public abstract class PStoreDataBase  extends RoomDatabase{
 
     private static  PStoreDataBase INSTANCE;
 
-    public  abstract Account AccountDao();
+    public  abstract AccountDAO AccountDao();
 
-    public PStoreDataBase getPStoreDatabaseInstance(Context context){
+    public static PStoreDataBase getPStoreDatabaseInstance(Context context){
         if(INSTANCE==null) {
             INSTANCE = Room.databaseBuilder(context, PStoreDataBase.class, "PStore")
                     //remove this

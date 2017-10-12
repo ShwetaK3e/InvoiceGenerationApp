@@ -12,6 +12,8 @@ import com.store.pawan.pawanstore.entities.Account;
 
 import java.util.List;
 
+import rx.Observable;
+
 /**
  * Created by shwetakumar on 9/26/17.
  */
@@ -21,21 +23,21 @@ public interface AccountDAO {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void addAccount(Account account);
+    Observable<Void> addAccount(Account account);
 
     @Query("select * from account where mode= :mode")
-    List<Account> getAllAccounts(int mode);
+    Observable<List<Account>> getAllAccounts(int mode);
 
     @Query("select paid_amount from account where id=:id")
-    float getPaidAmount(int id);
+    Observable<Float> getPaidAmount(int id);
 
     @Query("select amount from account where id=:id")
-    float getAmount(int id);
+    Observable<Float> getAmount(int id);
 
     @Delete
-    void delete(Account account);
+    Observable<Void> delete(Account account);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateAccount(Account account);
+    Observable<Void> updateAccount(Account account);
 
 }

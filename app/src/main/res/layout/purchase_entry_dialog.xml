@@ -222,7 +222,7 @@
                     android:src="@drawable/ic_minus"
                     android:scaleType="fitCenter"
                     android:padding="5dp"
-                    android:hint="Returned"
+                    android:hint="Paid"
 
                     android:textColorHint="@android:color/holo_green_dark"
                     android:digits="0123456789."

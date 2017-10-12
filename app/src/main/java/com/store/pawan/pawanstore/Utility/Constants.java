@@ -42,4 +42,20 @@ public class Constants {
         }
     }
 
+    public enum AccountMode{
+        LEND(0),
+        PAY(1);
+
+        int account_mode;
+
+        AccountMode(int mode) {
+            this.account_mode=mode;
+        }
+
+        public int getAccountMode(){
+           return account_mode;
+        }
+
+    }
+
 }

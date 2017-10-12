@@ -1,26 +1,11 @@
 package com.store.pawan.pawanstore.Adapter;
 
-import android.content.Context;
-import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewBold;
-import com.store.pawan.pawanstore.R;
-import com.store.pawan.pawanstore.model.EntryItem;
-
-import java.util.LinkedList;
-import java.util.List;
+import com.store.pawan.pawanstore.fragment.LendAccountFragment;
+import com.store.pawan.pawanstore.fragment.PayAccountFragment;
 
 /**
  * Created by cas on 26-07-2017.
@@ -29,17 +14,27 @@ import java.util.List;
 public class AccountPagerAdapter extends FragmentPagerAdapter {
 
 
+    private static int PAGES=2;
+
     public AccountPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
     @Override
     public Fragment getItem(int position) {
+        switch(position){
+            case 0:
+                LendAccountFragment.newInstance();
+                break;
+            case 1:
+                PayAccountFragment.newInstance();
+                break;
+        }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 0;
+        return PAGES;
     }
 }

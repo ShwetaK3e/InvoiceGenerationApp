@@ -29,10 +29,16 @@ import java.util.List;
 import rx.Observable;
 
 
-public class OwingAccountFragment extends Fragment {
+public class LendAccountFragment extends Fragment {
 
 
 
+    ViewPager accounts_pager;
+    TabLayout accounts_tab;
+
+    PStoreTextViewItalic no_item_text;
+    RecyclerView item_list;
+    ItemAdapter itemAdapter;
 
 
     ImageButton add_item;
@@ -45,8 +51,8 @@ public class OwingAccountFragment extends Fragment {
 
     public static List<EntryItem> items=new LinkedList<>();
 
-    public static OwingAccountFragment newInstance() {
-        OwingAccountFragment fragment = new OwingAccountFragment();
+    public static LendAccountFragment newInstance() {
+        LendAccountFragment fragment = new LendAccountFragment();
         return fragment;
     }
 

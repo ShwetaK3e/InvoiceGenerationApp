@@ -11,15 +11,17 @@ import android.arch.persistence.room.PrimaryKey;
 public class Account {
 
     @PrimaryKey(autoGenerate = true)
-    public final int  id;
+    public final int  id ;
 
     public String name;
 
-    public int mode;
+    public int mode; // 0 : lend  1: pay
 
     public  float amount;
 
     public float  paid_amount;
+
+
 
 
     public Account(int id, String name, int mode, float amount,float paid_amount) {

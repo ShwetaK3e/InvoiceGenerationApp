@@ -14,13 +14,13 @@
             android:textSize="18sp"
             android:layout_gravity="center"
             android:text="No Account has been added to the list yet."
-            android:id="@+id/no_item_text"
+            android:id="@+id/no_acc_text"
             android:gravity="center"/>
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/item_list" />
+            android:id="@+id/account_list" />
 
 
     </FrameLayout>
@@ -34,7 +34,7 @@
         android:padding="10dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:id="@+id/add_item"
+        android:id="@+id/add_account"
         android:translationY="-40dp"
         android:layout_marginRight="40dp"
         android:elevation="5dp"/>
