@@ -25,7 +25,6 @@ public abstract class PStoreDataBase  extends RoomDatabase{
         if(INSTANCE==null) {
             INSTANCE = Room.databaseBuilder(context, PStoreDataBase.class, "PStore")
                     //remove this
-            .allowMainThreadQueries()
             .fallbackToDestructiveMigration()
             .build();
         }

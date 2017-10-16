@@ -24,11 +24,11 @@ public class AccountPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch(position){
             case 0:
-                LendAccountFragment.newInstance();
-                break;
+                return LendAccountFragment.newInstance();
             case 1:
-                PayAccountFragment.newInstance();
-                break;
+                return PayAccountFragment.newInstance();
+
+
         }
         return null;
     }

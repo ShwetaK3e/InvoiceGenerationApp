@@ -12,10 +12,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.store.pawan.pawanstore.Utility.PStoreDataBase;
+import com.store.pawan.pawanstore.fragment.AddAccountFragment;
 import com.store.pawan.pawanstore.fragment.AddItemFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
 
 
 
@@ -40,7 +43,7 @@ public class MainActivity extends AppCompatActivity
 
 
         FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.frame, AddItemFragment.newInstance());
+        ft.replace(R.id.frame, AddAccountFragment.newInstance());
         ft.commit();
     }
 

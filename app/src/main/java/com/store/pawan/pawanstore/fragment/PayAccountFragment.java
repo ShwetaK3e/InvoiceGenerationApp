@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import io.reactivex.Scheduler;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -39,7 +44,7 @@ import rx.schedulers.Schedulers;
 
 public class PayAccountFragment extends Fragment {
 
-
+    private static String TAG=PayAccountFragment.class.getSimpleName();
 
 
 
@@ -72,7 +77,10 @@ public class PayAccountFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_accounts_management, container, false);
+        View view= inflater.inflate(R.layout.pager_frag_account_list, container, false);
+
+        dataBase=PStoreDataBase.getPStoreDatabaseInstance(getActivity().getApplicationContext());
+
 
         accounts_list=view.findViewById(R.id.account_list);
         accounts_list.setLayoutManager(new GridLayoutManager(getContext(),1));
@@ -84,6 +92,27 @@ public class PayAccountFragment extends Fragment {
 
 
         no_acc_text=view.findViewById(R.id.no_acc_text);
+        Observable<Integer> account_list_size_obv= Observable.just(payAccounts.size());
+        account_list_size_obv.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        if(integer!=0){
+                            no_acc_text.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                });
 
         add_account=view.findViewById(R.id.add_account);
         add_account.setOnClickListener(click->{
@@ -91,7 +120,6 @@ public class PayAccountFragment extends Fragment {
         });
 
 
-        dataBase=PStoreDataBase.getPStoreDatabaseInstance(getActivity().getApplicationContext());
 
 
 
@@ -104,8 +132,6 @@ public class PayAccountFragment extends Fragment {
 
 
 
-    boolean select_instrument_show=true;
-    int item_no=0;
 
     boolean inc=false,dec=false;
 
@@ -115,7 +141,6 @@ public class PayAccountFragment extends Fragment {
         add_account_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         add_account_dialog.setContentView(R.layout.purchase_entry_dialog);
 
-        Account account;
 
         final EntryHolder holder=new EntryHolder(add_account_dialog);
 
@@ -123,6 +148,7 @@ public class PayAccountFragment extends Fragment {
         Observable<CharSequence> name_obv= RxTextView.textChanges(holder.account_name);
         Observable<CharSequence> tot_amnt_obv= RxTextView.textChanges(holder.total_amnt);
         Observable<CharSequence> new_amnt_obv= RxTextView.textChanges(holder.update_amnt);
+
 
         new_amnt_obv.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -141,13 +167,12 @@ public class PayAccountFragment extends Fragment {
                     public void onNext(CharSequence charSequence) {
                         if (charSequence.length() != 0 && acc!=null) {
                             if (inc) {
-                                    acc.setAmount(acc.getAmount() + Float.parseFloat(charSequence.toString()));
+                                    holder.total_amnt.setText(String.valueOf(acc.getAmount() + Float.parseFloat(charSequence.toString())));
                                     holder.remaining_amnt.setText(String.valueOf(acc.getAmount()-acc.getPaid_amount()));
                             } else {
-                                   acc.setAmount(acc.getAmount() - Float.parseFloat(charSequence.toString()));
-                                   acc.setPaid_amount(acc.getPaid_amount() + Float.parseFloat(charSequence.toString()));
+                                   holder.total_amnt.setText(String.valueOf(acc.getAmount() - Float.parseFloat(charSequence.toString())));
+                                   holder.paid_amnt.setText(String.valueOf(acc.getPaid_amount() + Float.parseFloat(charSequence.toString())));
                                    holder.remaining_amnt.setText(String.valueOf(acc.getAmount()-acc.getPaid_amount()));
-
                             }
 
                         }
@@ -182,47 +207,53 @@ public class PayAccountFragment extends Fragment {
        );
 
        holder.add.setOnClickListener(view -> {
-
-           int id=payAccounts.size();
+           int id;
+           if(acc==null) {
+               id = payAccounts.size();
+           }else{
+               id=acc.getId();
+           }
            String name=holder.account_name.getText().toString();
            int accountMode=Constants.AccountMode.PAY.getAccountMode();
            float paid_amnt= (holder.paid_amnt.getText().toString().length()!=0) ? Float.parseFloat(holder.paid_amnt.getText().toString()):0.0f;
            float total_amnt=Float.parseFloat(holder.total_amnt.getText().toString());
            Account account =new Account(id,name,accountMode,total_amnt,paid_amnt);
-           addPayAccount(account);
+           if(acc==null) {
+               addPayAccount(account);
+           }else{
+               updatePayAccount(account);
+           }
            add_account_dialog.dismiss();
 
-
        });
 
 
 
-       holder.inc_amnt_btn.setOnClickListener(click->{
-           if(inc){
-               inc=false;
-               holder.inc_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green);
-           }else{
-               inc=true;
-               dec=false;
-               holder.dec_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red_ring);
-               holder.inc_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green_ring);
-           }
-       });
+        holder.inc_amnt_btn.setOnClickListener(click->{
+            if(inc){
+                inc=false;
+                holder.inc_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red_ring);
+            }else{
+                inc=true;
+                dec=false;
+                holder.dec_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green_ring);
+                holder.inc_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red);
+            }
+        });
 
         holder.dec_amnt_btn.setOnClickListener(click->{
             if(dec){
                 dec=false;
-                holder.dec_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red);
+                holder.dec_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green_ring);
             }else{
                 dec=true;
                 inc=false;
-                holder.inc_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green_ring);
-                holder.dec_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red_ring);
+                holder.inc_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red_ring);
+                holder.dec_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green);
             }
         });
-
        add_account_dialog.setOnDismissListener(view->{
-
+            getAllPayAccounts();
        });
 
 
@@ -273,62 +304,42 @@ public class PayAccountFragment extends Fragment {
 
 
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("ACCOUNTS");
-    }
+
 
 
     void getAllPayAccounts(){
 
-        dataBase.AccountDao().getAllAccounts(Constants.AccountMode.PAY.getAccountMode()).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Account>>() {
-                    @Override
-                    public void onCompleted() {
+        dataBase.AccountDao().getAllAccounts(Constants.AccountMode.LEND.getAccountMode()).subscribeOn(io.reactivex.schedulers.Schedulers.computation())
+                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                .subscribe(accounts -> {
+                            payAccounts = accounts;
+                            adapter.notifyDataSetChanged();
+                        },
+                        throwable -> Log.e(TAG, "exception getting accounts"));
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(List<Account> accounts) {
-
-                        payAccounts=accounts;
-                        adapter.notifyDataSetChanged();
-
-                    }
-                });
 
     }
 
     void addPayAccount(Account account){
-        dataBase.AccountDao().addAccount(account).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Void>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Void aVoid) {
-                        Toast.makeText(getActivity(), "Account has been Added", Toast.LENGTH_SHORT).show();
-                    }
+        io.reactivex.Observable.fromCallable(() -> dataBase.AccountDao().addAccount(account)).subscribeOn(io.reactivex.schedulers.Schedulers.computation())
+                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                .subscribe(aVoid -> {
+                    Toast.makeText(getActivity(), " Account Added", Toast.LENGTH_SHORT).show();
+                }, throwable -> {
+                    Toast.makeText(getActivity(), "Failed to Add Account", Toast.LENGTH_SHORT).show();
                 });
     }
 
-    void updatePayAccount(Account account){
+    Single updatePayAccount(Account account){
+        io.reactivex.Observable.fromCallable(() -> dataBase.AccountDao().updateAccount(account)).subscribeOn(io.reactivex.schedulers.Schedulers.computation())
+                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                .subscribe(aVoid -> {
+                    Toast.makeText(getActivity(), " Account Updated", Toast.LENGTH_SHORT).show();
+                }, throwable -> {
+                    Toast.makeText(getActivity(), "Failed to Update Account", Toast.LENGTH_SHORT).show();
+                });
 
+        return Single.fromCallable(() -> dataBase.AccountDao().addAccount(account));
 
 
     }
