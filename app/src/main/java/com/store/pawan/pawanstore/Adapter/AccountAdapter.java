@@ -52,18 +52,14 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
         Glide.with(context).load(Uri.parse("android.resource://com.store.pawan.pawanstore/drawable/"+ R.drawable.ic_guitar).toString()).into(holder.acc_img);
         holder.acc_name.setText(accounts.get(position).getName());
         holder.amount.setText("Rs. "+String.valueOf(accounts.get(position).getAmount()));
-        holder.itemView.setOnClickListener(view -> onMyItemClickListener.onClick(position));
+        holder.itemView.setOnClickListener(view -> onMyItemClickListener.onClick(position,null));
 
         holder.acc_del_layout.setOnClickListener(click->{
-            accounts.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position,accounts.size());
+            onMyItemClickListener.onClick(position,"delete");
         });
 
         holder.acc_del.setOnClickListener(click->{
-            accounts.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position,accounts.size());
+            onMyItemClickListener.onClick(position,"delete");
         });
     }
 
@@ -93,7 +89,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
     }
 
     public interface OnMyItemClickListener{
-        void onClick(int pos);
+        void onClick(int pos, String action);
     }
 
 

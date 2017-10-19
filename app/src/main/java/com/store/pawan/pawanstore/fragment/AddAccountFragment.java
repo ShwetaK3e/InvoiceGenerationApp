@@ -115,5 +115,12 @@ public class AddAccountFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         dataBase.destroyInstance();
+        accounts_tab.removeAllTabs();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        dataBase.destroyInstance();
     }
 }

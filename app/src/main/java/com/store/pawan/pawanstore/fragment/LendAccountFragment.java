@@ -1,6 +1,7 @@
 package com.store.pawan.pawanstore.fragment;
 
 import android.app.Dialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,6 +20,9 @@ import android.widget.Toast;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.store.pawan.pawanstore.Adapter.AccountAdapter;
 import com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewItalic;
+import com.store.pawan.pawanstore.DAO.AccountViewModel;
+import com.store.pawan.pawanstore.DAO.Injection;
+import com.store.pawan.pawanstore.DAO.ViewModelFactory;
 import com.store.pawan.pawanstore.R;
 import com.store.pawan.pawanstore.Utility.Constants;
 import com.store.pawan.pawanstore.Utility.PStoreDataBase;
@@ -28,15 +32,13 @@ import com.store.pawan.pawanstore.model.EntryItem;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-import io.reactivex.SingleObserver;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
+import io.reactivex.disposables.CompositeDisposable;
 import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
 
 
 public class LendAccountFragment extends Fragment {
@@ -61,6 +63,14 @@ public class LendAccountFragment extends Fragment {
 
 
 
+    private ViewModelFactory viewModelFactory;
+    private AccountViewModel accountViewModel;
+    private final CompositeDisposable disposable=new CompositeDisposable();
+
+    private PublishSubject<Integer> listCount;
+
+
+
     public static List<EntryItem> items=new LinkedList<>();
 
     public static LendAccountFragment newInstance() {
@@ -78,13 +88,42 @@ public class LendAccountFragment extends Fragment {
 
         accounts_list=view.findViewById(R.id.account_list);
         accounts_list.setLayoutManager(new GridLayoutManager(getContext(),1));
+        adapter=new AccountAdapter(getActivity(), lendAccounts, (pos,action) -> {
+            if(action==null) {
+                showAddItemDialog(lendAccounts.get(pos));
+            }else if(action.equalsIgnoreCase("delete")){
+                deleteLendAccount(lendAccounts.get(pos));
+            }
+        });
+        accounts_list.setAdapter(adapter);
 
-        getAllLendAccounts();
+
+        listCount=PublishSubject.create();
+        listCount.subscribe(new Observer<Integer>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                if(integer!=0){
+                    no_acc_text.setVisibility(View.INVISIBLE);
+                }else{
+                    no_acc_text.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
 
         no_acc_text=view.findViewById(R.id.no_acc_text);
-        Observable<Integer> account_list_size_obv= Observable.just(lendAccounts.size());
-        account_list_size_obv.subscribeOn(Schedulers.newThread())
+        Observable<Integer> account_list_size_obv= Observable.fromCallable(() -> lendAccounts.size());
+        account_list_size_obv.subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Integer>() {
                     @Override
@@ -94,7 +133,6 @@ public class LendAccountFragment extends Fragment {
 
                     @Override
                     public void onError(Throwable e) {
-
                     }
 
                     @Override
@@ -113,10 +151,8 @@ public class LendAccountFragment extends Fragment {
             showAddItemDialog(null);
         });
 
-
-
-
-
+        viewModelFactory= Injection.provideViewModelFactory(getActivity());
+        accountViewModel= ViewModelProviders.of(this,viewModelFactory).get(AccountViewModel.class);
 
         return  view;
     }
@@ -127,24 +163,31 @@ public class LendAccountFragment extends Fragment {
 
 
 
-    boolean inc=false,dec=false;
+    private boolean inc=false,dec=false;
+
 
     void showAddItemDialog(Account acc){
         add_account_dialog=new Dialog(getActivity(),R.style.MyDialogTheme);
         add_account_dialog.getWindow().getAttributes().windowAnimations=R.style.DialogAnimation;
         add_account_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        add_account_dialog.setContentView(R.layout.purchase_entry_dialog);
+        add_account_dialog.setContentView(R.layout.account_entry_dialog);
+
 
 
         final LendAccountFragment.EntryHolder holder=new LendAccountFragment.EntryHolder(add_account_dialog);
 
+
+        if(acc!=null){
+            holder.paid_amnt.setEnabled(false);
+            holder.remaining_amnt.setEnabled(false);
+        }
 
         Observable<CharSequence> name_obv= RxTextView.textChanges(holder.account_name);
         Observable<CharSequence> tot_amnt_obv= RxTextView.textChanges(holder.total_amnt);
         Observable<CharSequence> new_amnt_obv= RxTextView.textChanges(holder.update_amnt);
 
 
-        new_amnt_obv.subscribeOn(Schedulers.newThread())
+        new_amnt_obv.subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CharSequence>() {
                     @Override
@@ -154,19 +197,21 @@ public class LendAccountFragment extends Fragment {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.i(TAG+"update", "this is it"+" "+e.getMessage());
                     }
 
                     @Override
                     public void onNext(CharSequence charSequence) {
+
                         if (charSequence.length() != 0 && acc!=null) {
                             if (inc) {
                                 holder.total_amnt.setText(String.valueOf(acc.getAmount() + Float.parseFloat(charSequence.toString())));
-                                holder.remaining_amnt.setText(String.valueOf(acc.getAmount()-acc.getPaid_amount()));
-                            } else {
-                                holder.total_amnt.setText(String.valueOf(acc.getAmount() - Float.parseFloat(charSequence.toString())));
+                                holder.remaining_amnt.setText(String.valueOf(acc.getAmount()-acc.getPaid_amount()+Float.parseFloat(charSequence.toString())));
+                                holder.paid_amnt.setText(String.valueOf(acc.getPaid_amount()));
+                            } else if (dec) {
+                                holder.total_amnt.setText(String.valueOf(acc.getAmount()));
                                 holder.paid_amnt.setText(String.valueOf(acc.getPaid_amount() + Float.parseFloat(charSequence.toString())));
-                                holder.remaining_amnt.setText(String.valueOf(acc.getAmount()-acc.getPaid_amount()));
+                                holder.remaining_amnt.setText(String.valueOf(acc.getAmount()-(acc.getPaid_amount()+Float.parseFloat(charSequence.toString()))));
                             }
 
                         }
@@ -184,39 +229,50 @@ public class LendAccountFragment extends Fragment {
 
         Observable.combineLatest(name_obv,tot_amnt_obv,new_amnt_obv,(charSequence, charSequence2, charSequence3) -> {
             if(charSequence.length()!=0 && charSequence2.length()!=0 && Float.parseFloat(charSequence2.toString())>0.0f){
-                if(charSequence3.length()!=0 && !inc && !dec){
-                    return false;
+                if(acc!=null){
+                    if(charSequence3.length()!=0 && (inc || dec)) {
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
                 }else{
                     return true;
                 }
             }return false;
         }).subscribe(aBoolean -> {
-            holder.add.setEnabled(true);
-            holder.add.setTextColor(getResources().getColor(R.color.colorPrimary));
+            holder.add.setEnabled(aBoolean);
+            holder.add.setTextColor(aBoolean?getResources().getColor(R.color.colorPrimary):getResources().getColor(R.color.light_grey));
         });
 
         holder.cancel.setOnClickListener(view -> {
                     add_account_dialog.dismiss();
+                    inc=false;
+                    dec=false;
                 }
         );
 
         holder.add.setOnClickListener(view -> {
             int id;
-            if(acc==null) {
-                id = lendAccounts.size();
-            }else{
+            if(acc!=null) {
                 id=acc.getId();
             }
             String name=holder.account_name.getText().toString();
             int accountMode= Constants.AccountMode.LEND.getAccountMode();
             float paid_amnt= (holder.paid_amnt.getText().toString().length()!=0) ? Float.parseFloat(holder.paid_amnt.getText().toString()):0.0f;
             float total_amnt=Float.parseFloat(holder.total_amnt.getText().toString());
-            Account account =new Account(id,name,accountMode,total_amnt,paid_amnt);
-            if(acc==null) {
-                addLendAccount(account);
+
+            if(acc!=null) {
+                acc.setAmount(Float.parseFloat(holder.total_amnt.getText().toString()));
+                acc.setPaid_amount((holder.paid_amnt.getText().toString().length()!=0) ? Float.parseFloat(holder.paid_amnt.getText().toString()):0.0f);
+                addLendAccount(acc);
             }else{
-                updateLendAccount(account);
+                Account account = new Account(name, accountMode, total_amnt, paid_amnt);
+                addLendAccount(account);
             }
+
+            inc=false;
+            dec=false;
             add_account_dialog.dismiss();
 
         });
@@ -227,11 +283,17 @@ public class LendAccountFragment extends Fragment {
             if(inc){
                 inc=false;
                 holder.inc_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red_ring);
+
             }else{
                 inc=true;
                 dec=false;
                 holder.dec_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green_ring);
                 holder.inc_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red);
+                if(holder.update_amnt.getText().length()!=0) {
+                    holder.total_amnt.setText(String.valueOf(acc.getAmount() + Float.parseFloat(holder.update_amnt.getText().toString())));
+                    holder.paid_amnt.setText(String.valueOf(acc.getPaid_amount()));
+                    holder.remaining_amnt.setText(String.valueOf(acc.getAmount() - acc.getPaid_amount() + Float.parseFloat(holder.update_amnt.getText().toString())));
+                }
             }
         });
 
@@ -244,6 +306,11 @@ public class LendAccountFragment extends Fragment {
                 inc=false;
                 holder.inc_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red_ring);
                 holder.dec_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green);
+                if(holder.update_amnt.getText().length()!=0) {
+                    holder.total_amnt.setText(String.valueOf(acc.getAmount()));
+                    holder.paid_amnt.setText(String.valueOf(acc.getPaid_amount() + Float.parseFloat(holder.update_amnt.getText().toString())));
+                    holder.remaining_amnt.setText(String.valueOf(acc.getAmount() - (acc.getPaid_amount() + Float.parseFloat(holder.update_amnt.getText().toString()))));
+                }
             }
         });
 
@@ -296,48 +363,61 @@ public class LendAccountFragment extends Fragment {
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        getAllLendAccounts();
+    }
 
 
-
-
-
+    @Override
+    public void onStop() {
+        super.onStop();
+        disposable.clear();
+    }
 
     void getAllLendAccounts(){
-
-        dataBase.AccountDao().getAllAccounts(Constants.AccountMode.LEND.getAccountMode()).subscribeOn(io.reactivex.schedulers.Schedulers.computation())
+        disposable.add(accountViewModel.getAllAccounts(Constants.AccountMode.LEND.getAccountMode()).subscribeOn(io.reactivex.schedulers.Schedulers.io())
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
                 .subscribe(accounts -> {
-                            Log.e(TAG, "success getting accounts"+ " "+ accounts.size());
-                            lendAccounts = accounts;
-                            adapter=new AccountAdapter(getContext(),lendAccounts,pos->{
-                                showAddItemDialog(lendAccounts.get(pos));
-                            });
-                            accounts_list.setAdapter(adapter);
+                            lendAccounts.clear();
+                            lendAccounts.addAll(accounts);
+                            listCount.onNext(lendAccounts.size());
+                            adapter.notifyDataSetChanged();
                         },
-                        throwable -> Log.e(TAG, "exception getting accounts"));
+                        throwable -> Log.e(TAG, "exception getting accounts"))
+        );
+
 
     }
 
     void addLendAccount(Account account){
-         io.reactivex.Observable.fromCallable(() -> dataBase.AccountDao().addAccount(account)).subscribeOn(io.reactivex.schedulers.Schedulers.computation())
+
+        disposable.add(accountViewModel.updateUser(account).subscribeOn(io.reactivex.schedulers.Schedulers.io())
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
-                .subscribe(aVoid -> {
+                .subscribe(()-> {
                     Toast.makeText(getActivity(), " Account Added", Toast.LENGTH_SHORT).show();
                 }, throwable -> {
                     Toast.makeText(getActivity(), "Failed to Add Account", Toast.LENGTH_SHORT).show();
-                });
+                })
+        );
+
+
     }
 
-    void updateLendAccount(Account account){
-        io.reactivex.Observable.fromCallable(() -> dataBase.AccountDao().updateAccount(account)).subscribeOn(io.reactivex.schedulers.Schedulers.computation())
+    void deleteLendAccount(Account account){
+
+        disposable.add(accountViewModel.deleteUser(account).subscribeOn(io.reactivex.schedulers.Schedulers.io())
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
-                .subscribe(aVoid -> {
-                    Toast.makeText(getActivity(), " Account Updated", Toast.LENGTH_SHORT).show();
+                .subscribe(()-> {
+                    Toast.makeText(getActivity(), " Account Deleted", Toast.LENGTH_SHORT).show();
+                    lendAccounts.remove(account);
+                    adapter.notifyDataSetChanged();
+                    listCount.onNext(lendAccounts.size());
                 }, throwable -> {
-                    Toast.makeText(getActivity(), "Failed to Update Account", Toast.LENGTH_SHORT).show();
-                });
-
-
+                    Toast.makeText(getActivity(), "Failed to Delete Account", Toast.LENGTH_SHORT).show();
+                })
+        );
 
     }
 

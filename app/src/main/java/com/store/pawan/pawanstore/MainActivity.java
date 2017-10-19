@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity
 
 
         FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.frame, AddAccountFragment.newInstance());
+        ft.replace(R.id.frame, AddItemFragment.newInstance());
         ft.commit();
     }
 
@@ -87,11 +87,13 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            ft.replace(R.id.frame, AddItemFragment.newInstance());
         } else if (id == R.id.nav_gallery) {
-
+            ft.replace(R.id.frame, AddAccountFragment.newInstance());
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
@@ -102,6 +104,7 @@ public class MainActivity extends AppCompatActivity
 
         }
 
+        ft.commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

@@ -17,7 +17,7 @@ public class Injection {
     }
 
     public static ViewModelFactory provideViewModelFactory(Context context) {
-        UserDataSource dataSource = provideUserDataSource(context);
+        AccountDataSource dataSource = provideUserDataSource(context);
         return new ViewModelFactory(dataSource);
     }
 }

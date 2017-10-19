@@ -19,8 +19,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory{
 
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(Account.class)) {
-            return (T) new Account(accountDataSource);
+        if (modelClass.isAssignableFrom(AccountViewModel.class)) {
+            return (T) new AccountViewModel(accountDataSource);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }

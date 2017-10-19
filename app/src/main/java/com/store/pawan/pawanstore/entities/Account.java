@@ -11,7 +11,7 @@ import android.arch.persistence.room.PrimaryKey;
 public class Account {
 
     @PrimaryKey(autoGenerate = true)
-    public final int  id ;
+    public  int  id ;
 
     public String name;
 
@@ -24,13 +24,14 @@ public class Account {
 
 
 
-    public Account(int id, String name, int mode, float amount,float paid_amount) {
-        this.id = id;
+    public Account( String name, int mode, float amount,float paid_amount) {
         this.name = name;
         this.mode = mode;
         this.amount = amount;
         this.paid_amount=paid_amount;
     }
+
+
 
     public int getId() {
         return id;

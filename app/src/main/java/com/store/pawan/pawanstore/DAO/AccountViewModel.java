@@ -8,6 +8,7 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.internal.operators.completable.CompletableFromAction;
 
 /**
  * Created by shwetakumar on 10/17/17.
@@ -25,10 +26,21 @@ public class AccountViewModel extends ViewModel {
 
 
 
-    public Flowable<Account> getAccount(){
-        return accountDataSource.getAccounts();
+    public Flowable<List<Account>> getAllAccounts(int mode){
+        return accountDataSource.getAccounts(mode);
     }
 
-    public Completable updateUser
+    public Completable updateUser(Account account){
+        return new CompletableFromAction(()->{
+            accountDataSource.insertOrUpdateAccount(account);
+        });
+    }
+
+    public  Completable deleteUser(Account account){
+        return  new CompletableFromAction(()->{
+            accountDataSource.deleteAccount(account);
+          }
+        );
+    }
 
 }
