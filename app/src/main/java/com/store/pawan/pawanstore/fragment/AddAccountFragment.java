@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,6 +115,7 @@ public class AddAccountFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        Log.i("ABCD","called destroy");
         dataBase.destroyInstance();
         accounts_tab.removeAllTabs();
     }
@@ -121,6 +123,21 @@ public class AddAccountFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        Log.i("ABCD","called stop");
         dataBase.destroyInstance();
     }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.i("ABCD","called pause");
+
+    }
+
+
+
+
+
+
 }

@@ -29,8 +29,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
 
+import rx.Observable;
+import rx.Observer;
+import rx.subjects.PublishSubject;
 
 
 public class AddItemFragment extends Fragment {
@@ -55,6 +57,7 @@ public class AddItemFragment extends Fragment {
 
 
     public static List<EntryItem> items=new LinkedList<>();
+    private PublishSubject<Integer> listCount;
 
     public static AddItemFragment newInstance() {
         AddItemFragment fragment = new AddItemFragment();
@@ -68,11 +71,34 @@ public class AddItemFragment extends Fragment {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_add_item, container, false);
         no_item_text= view.findViewById(R.id.no_item_text);
+        listCount= PublishSubject.create();
+        listCount.subscribe(new Observer<Integer>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                if(integer!=0){
+                    no_item_text.setVisibility(View.INVISIBLE);
+                }else{
+                    no_item_text.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        listCount.onNext(items.size());
 
         new_list=view.findViewById(R.id.refresh);
         new_list.setOnClickListener(click->{
             if(items!=null && !items.isEmpty()){
                 items.clear();
+                listCount.onNext(items.size());
                 if(itemAdapter!=null){
                     itemAdapter.notifyDataSetChanged();
                 }
@@ -127,7 +153,6 @@ public class AddItemFragment extends Fragment {
 
 
         final EntryHolder holder=new EntryHolder(add_bill_item_dialog);
-        //Observable<CharSequence> item_name_obv= RxTextView.textChanges(holder.item_name);
         Observable<CharSequence> qnty_obv= RxTextView.textChanges(holder.sell_count);
         Observable<CharSequence> price_obv= RxTextView.textChanges(holder.price);
         Observable<CharSequence> tax_obv= RxTextView.textChanges(holder.gst);
@@ -165,6 +190,7 @@ public class AddItemFragment extends Fragment {
             holder.gst.setText(String.valueOf(item.getTax()));
             holder.sell_count.setText(String.valueOf(item.getQty()));
             items.remove(item);
+            listCount.onNext(items.size());
         }
 
         holder.inc_sell_count.setOnClickListener(view -> {
@@ -204,39 +230,6 @@ public class AddItemFragment extends Fragment {
 
 
 
-
-
-     /* holder.item_img.setOnClickListener(view->{
-          if(select_instrument_show){
-              select_instrument_show=false;
-              holder.item_list_layout.animate().alpha(0.0f).translationY(holder.item_list_layout.getHeight()).setDuration(300);
-          }else{
-              select_instrument_show=true;
-              holder.item_list_layout.animate().alpha(1.0f).translationY(0).setDuration(300);
-          }
-
-      });
-
-
-
-
-
-       InstrumentAdapter instrumentAdapter =new InstrumentAdapter(getContext(), pos -> {
-           String img_Uri= Commons.itemImage_map.get(pos);
-           Glide.with(getContext()).load(img_Uri).into(holder.item_img);
-           item.setItemImageUri(img_Uri);
-           holder.item_name.setText(Commons.itemName_map.get(pos));
-           item.setItemName(Commons.itemName_map.get(pos));
-           holder.price.setText(String.valueOf(Commons.itemPrice_map.get(pos)));
-           item.setPrice(Commons.itemPrice_map.get(pos));
-           holder.gst.setText(String.valueOf(Commons.itemTax_map.get(pos)));
-           item.setTax(Commons.itemTax_map.get(pos));
-           holder.item_list_layout.animate().alpha(0.0f).translationY(holder.item_list_layout.getHeight()).setDuration(300);
-           select_instrument_show=false;
-       });
-       holder.instrument_list.setLayoutManager(new GridLayoutManager(getContext(),5));
-       holder.instrument_list.setAdapter(instrumentAdapter);
-*/
        holder.cancel.setOnClickListener(view -> {
            add_bill_item_dialog.dismiss();
 
@@ -248,12 +241,9 @@ public class AddItemFragment extends Fragment {
            item.setQty(Integer.parseInt(holder.sell_count.getText().toString().trim()));
            item.setPrice(item.getPrice()*item.getQty());
            items.add(item);
+           listCount.onNext(items.size());
            itemAdapter.notifyDataSetChanged();
-           if(items.size()!=0){
-               no_item_text.setVisibility(View.INVISIBLE);
-           }else{
-               no_item_text.setVisibility(View.VISIBLE);
-           }
+
        });
 
 
@@ -261,13 +251,8 @@ public class AddItemFragment extends Fragment {
            add_bill_item_dialog=null;
            if(item_no>items.size()) {
                items.add(item);
+               listCount.onNext(items.size());
                itemAdapter.notifyDataSetChanged();
-               if(items.size()!=0){
-                   no_item_text.setVisibility(View.INVISIBLE);
-               }else{
-                   no_item_text.setVisibility(View.VISIBLE);
-               }
-
            }
        });
        add_bill_item_dialog.show();
@@ -312,8 +297,6 @@ public class AddItemFragment extends Fragment {
             add.setEnabled(false);
             cancel=(Button)dialog.findViewById(R.id.cancel);
 
-           // item_list_layout=(LinearLayout)dialog.findViewById(R.id.type_of_item_layout);
-           // instrument_list=(RecyclerView)dialog.findViewById(R.id.instument_list);
         }
 
     }
@@ -376,4 +359,6 @@ public class AddItemFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("GENERATE BILL");
     }
+
+
 }

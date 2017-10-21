@@ -97,7 +97,7 @@ public class LendAccountFragment extends Fragment {
         });
         accounts_list.setAdapter(adapter);
 
-
+        no_acc_text=view.findViewById(R.id.no_acc_text);
         listCount=PublishSubject.create();
         listCount.subscribe(new Observer<Integer>() {
             @Override
@@ -121,7 +121,7 @@ public class LendAccountFragment extends Fragment {
         });
 
 
-        no_acc_text=view.findViewById(R.id.no_acc_text);
+
         Observable<Integer> account_list_size_obv= Observable.fromCallable(() -> lendAccounts.size());
         account_list_size_obv.subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -366,13 +366,35 @@ public class LendAccountFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Log.i("ABCD","called start");
         getAllLendAccounts();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i("ABCD","called resume");
+        getAllLendAccounts();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.i("ABCD","called pause");
+        disposable.clear();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.i("ABCD","called destroy");
+        disposable.clear();
+    }
 
     @Override
     public void onStop() {
         super.onStop();
+        Log.i("ABCD","called stop");
         disposable.clear();
     }
 
