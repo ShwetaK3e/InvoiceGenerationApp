@@ -370,12 +370,7 @@ public class LendAccountFragment extends Fragment {
         getAllLendAccounts();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.i("ABCD","called resume");
-        getAllLendAccounts();
-    }
+
 
     @Override
     public void onPause() {

@@ -2,7 +2,6 @@ package com.store.pawan.pawanstore;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.store.pawan.pawanstore.Utility.PStoreDataBase;
 import com.store.pawan.pawanstore.fragment.AddAccountFragment;
 import com.store.pawan.pawanstore.fragment.AddItemFragment;
 
@@ -90,9 +88,9 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
 
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_new_bill) {
             ft.replace(R.id.frame, AddItemFragment.newInstance());
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_accounts) {
             ft.replace(R.id.frame, AddAccountFragment.newInstance());
         } else if (id == R.id.nav_slideshow) {
 

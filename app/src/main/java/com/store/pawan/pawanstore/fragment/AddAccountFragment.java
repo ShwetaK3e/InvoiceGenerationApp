@@ -1,6 +1,7 @@
 package com.store.pawan.pawanstore.fragment;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -63,14 +64,19 @@ public class AddAccountFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_accounts_management, container, false);
+        Log.i("ABCD1","called create");
 
-        dataBase=PStoreDataBase.getPStoreDatabaseInstance(getContext());
+
         accounts_pager=view.findViewById(R.id.accounts_viewPager);
-        adapter=new AccountPagerAdapter(getFragmentManager());
+        adapter=new AccountPagerAdapter(getChildFragmentManager());
         accounts_pager.setAdapter(adapter);
+        accounts_pager.setOffscreenPageLimit(2);
+
         accounts_tab=view.findViewById(R.id.accounts_tab);
         accounts_tab.setupWithViewPager(accounts_pager);
         createTabIcons();
+
+        Log.i("ABCD1","called create"+accounts_pager.getAdapter().getCount());
 
         return  view;
     }
@@ -89,21 +95,15 @@ public class AddAccountFragment extends Fragment {
        // tabTwo.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_list, 0, 0);
         accounts_tab.getTabAt(1).setCustomView(tabTwo);
 
+
+
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
-
-
-
-
-
-
-
-
-
-
-
-
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -115,23 +115,22 @@ public class AddAccountFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.i("ABCD","called destroy");
-        dataBase.destroyInstance();
-        accounts_tab.removeAllTabs();
+        Log.i("ABCD1","called destroy");
+
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.i("ABCD","called stop");
-        dataBase.destroyInstance();
+        Log.i("ABCD1","called stop");
+
     }
 
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.i("ABCD","called pause");
+        Log.i("ABCD1","called pause");
 
     }
 

@@ -27,10 +27,12 @@ public class AccountPagerAdapter extends FragmentPagerAdapter {
                 return LendAccountFragment.newInstance();
             case 1:
                 return PayAccountFragment.newInstance();
+            default:
+                return null;
 
 
         }
-        return null;
+
     }
 
     @Override
