@@ -18,6 +18,7 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="maroon">#d72d2d</color>
+    <color name="maroon_light">#22d72d2d</color>
     <color name="red">#FF0000</color>
     <color name="light_grey">#a3a1a1</color>
 
