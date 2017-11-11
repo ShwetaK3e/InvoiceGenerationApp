@@ -2,6 +2,7 @@ package com.store.pawan.pawanstore.DAO;
 
 import com.store.pawan.pawanstore.DAO.AccountDAO;
 import com.store.pawan.pawanstore.entities.Account;
+import com.store.pawan.pawanstore.entities.PaymentDetails;
 
 import java.util.List;
 
@@ -18,5 +19,7 @@ public interface AccountDataSource {
     void insertOrUpdateAccount(Account account);
 
     void deleteAccount(Account account);
+
+
 
 }

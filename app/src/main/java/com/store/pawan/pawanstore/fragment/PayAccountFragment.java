@@ -22,7 +22,7 @@ import com.store.pawan.pawanstore.Adapter.AccountAdapter;
 import com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewItalic;
 import com.store.pawan.pawanstore.DAO.AccountViewModel;
 import com.store.pawan.pawanstore.DAO.Injection;
-import com.store.pawan.pawanstore.DAO.ViewModelFactory;
+import com.store.pawan.pawanstore.DAO.AccountViewModelFactory;
 import com.store.pawan.pawanstore.R;
 import com.store.pawan.pawanstore.Utility.Constants;
 import com.store.pawan.pawanstore.Utility.PStoreDataBase;
@@ -61,7 +61,7 @@ public class PayAccountFragment extends Fragment {
 
 
 
-    private ViewModelFactory viewModelFactory;
+    private AccountViewModelFactory accountViewModelFactory;
     private AccountViewModel accountViewModel;
     private final CompositeDisposable disposable=new CompositeDisposable();
 
@@ -148,8 +148,8 @@ public class PayAccountFragment extends Fragment {
             showAddItemDialog(null);
         });
 
-        viewModelFactory= Injection.provideViewModelFactory(getActivity());
-        accountViewModel= ViewModelProviders.of(this,viewModelFactory).get(AccountViewModel.class);
+        accountViewModelFactory = Injection.provideViewModelFactory(getActivity());
+        accountViewModel= ViewModelProviders.of(this, accountViewModelFactory).get(AccountViewModel.class);
 
         return  view;
     }

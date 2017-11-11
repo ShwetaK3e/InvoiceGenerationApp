@@ -16,8 +16,8 @@ public class Injection {
         return new LocalPStoreDataSource(database.AccountDao());
     }
 
-    public static ViewModelFactory provideViewModelFactory(Context context) {
+    public static AccountViewModelFactory provideViewModelFactory(Context context) {
         AccountDataSource dataSource = provideUserDataSource(context);
-        return new ViewModelFactory(dataSource);
+        return new AccountViewModelFactory(dataSource);
     }
 }

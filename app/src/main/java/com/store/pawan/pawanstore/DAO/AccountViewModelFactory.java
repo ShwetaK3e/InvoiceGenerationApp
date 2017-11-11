@@ -9,11 +9,11 @@ import com.store.pawan.pawanstore.entities.Account;
  * Created by shwetakumar on 10/17/17.
  */
 
-public class ViewModelFactory implements ViewModelProvider.Factory{
+public class AccountViewModelFactory implements ViewModelProvider.Factory{
 
     private final AccountDataSource accountDataSource;
 
-    public ViewModelFactory(AccountDataSource accountDataSource) {
+    public AccountViewModelFactory(AccountDataSource accountDataSource) {
         this.accountDataSource = accountDataSource;
     }
 

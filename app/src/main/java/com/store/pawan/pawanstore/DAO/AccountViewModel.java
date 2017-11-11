@@ -24,8 +24,6 @@ public class AccountViewModel extends ViewModel {
         this.accountDataSource = accountDataSource;
     }
 
-
-
     public Flowable<List<Account>> getAllAccounts(int mode){
         return accountDataSource.getAccounts(mode);
     }

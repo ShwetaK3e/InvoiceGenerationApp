@@ -58,4 +58,7 @@ public class Constants {
 
     }
 
+    public static int[] GSTSlab={5,12,18,28};
+
+
 }

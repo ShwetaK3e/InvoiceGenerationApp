@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +24,10 @@ import com.store.pawan.pawanstore.Adapter.ItemAdapter;
 import com.store.pawan.pawanstore.CustomWidgets.PStoreEditTextBold;
 import com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewItalic;
 import com.store.pawan.pawanstore.R;
+import com.store.pawan.pawanstore.Utility.Constants;
 import com.store.pawan.pawanstore.model.EntryItem;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.subjects.PublishSubject;
 
 
@@ -39,21 +43,18 @@ public class AddItemFragment extends Fragment {
 
 
 
-    ImageButton new_list;
-    ImageButton show_bill;
+    TextView gst_perc_1,gst_perc_2,gst_perc_3,gst_perc_4,gst_perc_5;
+    EditText rate_1,rate_2,rate_3,rate_4,rate_5;
+    ImageButton dec_amnt_bnt_1,dec_amnt_bnt_2,dec_amnt_bnt_3,dec_amnt_bnt_4,dec_amnt_bnt_5;
+    ImageButton inc_amnt_bnt_1,inc_amnt_bnt_2,inc_amnt_bnt_3,inc_amnt_bnt_4,inc_amnt_bnt_5;
+    EditText count_1,count_2,count_3,count_4,count_5;
+    EditText gst_amnt_1,gst_amnt_2,gst_amnt_3,gst_amnt_4,gst_amnt_5;
+    EditText total_amnt_1,total_amnt_2,total_amnt_3,total_amnt_4,total_amnt_5;
+    EditText gst_amnt_tot;
+    EditText total_amnt;
+    EditText total;
+    ImageButton refresh_page;
 
-    PStoreTextViewItalic no_item_text;
-    RecyclerView item_list;
-    ItemAdapter itemAdapter;
-
-
-    ImageButton add_item;
-
-    //Add Dialog
-    Dialog add_bill_item_dialog;
-
-    //Final List
-    Dialog final_list_dialog;
 
 
     public static List<EntryItem> items=new LinkedList<>();
@@ -69,69 +70,300 @@ public class AddItemFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_add_item, container, false);
-        no_item_text= view.findViewById(R.id.no_item_text);
-        listCount= PublishSubject.create();
-        listCount.subscribe(new Observer<Integer>() {
-            @Override
-            public void onCompleted() {
+        View view= inflater.inflate(R.layout.new_bill_record_layout, container, false);
+
+        gst_perc_1=view.findViewById(R.id.gst_perc_1);
+        gst_perc_2=view.findViewById(R.id.gst_perc_2);
+        gst_perc_3=view.findViewById(R.id.gst_perc_3);
+        gst_perc_4=view.findViewById(R.id.gst_perc_4);
+        gst_perc_5=view.findViewById(R.id.gst_perc_5);
+
+        rate_1=view.findViewById(R.id.rate_1);
+        rate_2=view.findViewById(R.id.rate_2);
+        rate_3=view.findViewById(R.id.rate_3);
+        rate_4=view.findViewById(R.id.rate_4);
+        rate_5=view.findViewById(R.id.rate_5);
+
+        dec_amnt_bnt_1=view.findViewById(R.id.dec_amnt_bnt_1);
+        dec_amnt_bnt_2=view.findViewById(R.id.dec_amnt_bnt_2);
+        dec_amnt_bnt_3=view.findViewById(R.id.dec_amnt_bnt_3);
+        dec_amnt_bnt_4=view.findViewById(R.id.dec_amnt_bnt_4);
+        dec_amnt_bnt_5=view.findViewById(R.id.dec_amnt_bnt_5);
+
+        inc_amnt_bnt_1=view.findViewById(R.id.inc_amnt_bnt_1);
+        inc_amnt_bnt_2=view.findViewById(R.id.inc_amnt_bnt_2);
+        inc_amnt_bnt_3=view.findViewById(R.id.inc_amnt_bnt_3);
+        inc_amnt_bnt_4=view.findViewById(R.id.inc_amnt_bnt_4);
+        inc_amnt_bnt_5=view.findViewById(R.id.inc_amnt_bnt_5);
+
+        count_1=view.findViewById(R.id.count_1);
+        count_2=view.findViewById(R.id.count_2);
+        count_3=view.findViewById(R.id.count_3);
+        count_4=view.findViewById(R.id.count_4);
+        count_5=view.findViewById(R.id.count_5);
+
+        gst_amnt_1=view.findViewById(R.id.gst_amnt_1);
+        gst_amnt_2=view.findViewById(R.id.gst_amnt_2);
+        gst_amnt_3=view.findViewById(R.id.gst_amnt_3);
+        gst_amnt_4=view.findViewById(R.id.gst_amnt_4);
+        gst_amnt_5=view.findViewById(R.id.gst_amnt_5);
+
+        total_amnt_1=view.findViewById(R.id.total_amnt_1);
+        total_amnt_2=view.findViewById(R.id.total_amnt_2);
+        total_amnt_3=view.findViewById(R.id.total_amnt_3);
+        total_amnt_4=view.findViewById(R.id.total_amnt_4);
+        total_amnt_5=view.findViewById(R.id.total_amnt_5);
+
+        gst_amnt_tot=view.findViewById(R.id.gst_amnt_tot);
+        total_amnt=view.findViewById(R.id.total_amnt);
+        total=view.findViewById(R.id.total);
+        refresh_page=view.findViewById(R.id.refresh_page);
+
+        Observable<CharSequence> gst_perc_1_obv= RxTextView.textChanges(gst_perc_1);
+        Observable<CharSequence> gst_perc_2_obv= RxTextView.textChanges(gst_perc_2);
+        Observable<CharSequence> gst_perc_3_obv= RxTextView.textChanges(gst_perc_3);
+        Observable<CharSequence> gst_perc_4_obv= RxTextView.textChanges(gst_perc_4);
+        Observable<CharSequence> gst_perc_5_obv= RxTextView.textChanges(gst_perc_4);
+
+        Observable<CharSequence> rate_1_obv= RxTextView.textChanges(rate_1);
+        Observable<CharSequence> rate_2_obv= RxTextView.textChanges(rate_2);
+        Observable<CharSequence> rate_3_obv= RxTextView.textChanges(rate_3);
+        Observable<CharSequence> rate_4_obv= RxTextView.textChanges(rate_4);
+        Observable<CharSequence> rate_5_obv= RxTextView.textChanges(rate_4);
+
+        Observable<CharSequence> count_1_obv= RxTextView.textChanges(count_1);
+        Observable<CharSequence> count_2_obv= RxTextView.textChanges(count_2);
+        Observable<CharSequence> count_3_obv= RxTextView.textChanges(count_3);
+        Observable<CharSequence> count_4_obv= RxTextView.textChanges(count_4);
+        Observable<CharSequence> count_5_obv= RxTextView.textChanges(count_4);
+
+        Observable.combineLatest(gst_perc_1_obv , rate_1_obv, count_1_obv, (charSequence, charSequence2, charSequence3)->{
+                if(charSequence2.length()!=0){
+                    return true;
+                }return false;
+        }
+        ).subscribe(aBoolean -> {
+            if(aBoolean){
+                float gst = Integer.parseInt(gst_perc_1.getText().toString())/2;
+                float rate=Float.parseFloat(rate_1.getText().toString());
+                int qnty= Integer.parseInt(count_1.getText().toString());
+                double gst_amount=rate*qnty*gst/100;
+                double tot_amount=rate*qnty;
+                gst_amnt_1.setText(String.format("%.1f", gst_amount));
+                total_amnt_1.setText(String.format("%.1f", (tot_amount-gst_amount*2)));
 
             }
+        });
 
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Integer integer) {
-                if(integer!=0){
-                    no_item_text.setVisibility(View.INVISIBLE);
-                }else{
-                    no_item_text.setVisibility(View.VISIBLE);
+        Observable.combineLatest(gst_perc_2_obv , rate_2_obv, count_2_obv, (charSequence, charSequence2, charSequence3)->{
+                    if(charSequence2.length()!=0){
+                        return true;
+                    }return false;
                 }
+        ).subscribe(aBoolean -> {
+            if(aBoolean){
+                float gst = Integer.parseInt(gst_perc_2.getText().toString())/2;
+                float rate=Float.parseFloat(rate_2.getText().toString());
+                int qnty= Integer.parseInt(count_2.getText().toString());
+                double gst_amount=rate*qnty*gst/100;
+                double tot_amount=rate*qnty;
+                gst_amnt_2.setText(String.format("%.1f", gst_amount));
+                total_amnt_2.setText(String.format("%.1f", (tot_amount-gst_amount*2)));
+
             }
         });
-        listCount.onNext(items.size());
 
-        new_list=view.findViewById(R.id.refresh);
-        new_list.setOnClickListener(click->{
-            if(items!=null && !items.isEmpty()){
-                items.clear();
-                listCount.onNext(items.size());
-                if(itemAdapter!=null){
-                    itemAdapter.notifyDataSetChanged();
+
+        Observable.combineLatest(gst_perc_3_obv , rate_3_obv, count_3_obv, (charSequence, charSequence2, charSequence3)->{
+                    if(charSequence2.length()!=0){
+
+                        return true;
+                    }return false;
                 }
+        ).subscribe(aBoolean -> {
+            if(aBoolean){
+                float gst = Integer.parseInt(gst_perc_3.getText().toString())/2;
+                float rate=Float.parseFloat(rate_3.getText().toString());
+                int qnty= Integer.parseInt(count_3.getText().toString());
+                double gst_amount=rate*qnty*gst/100;
+                double tot_amount=rate*qnty;
+                gst_amnt_3.setText(String.format("%.1f", gst_amount));
+                total_amnt_3.setText(String.format("%.1f", (tot_amount-gst_amount*2)));
+
             }
         });
 
-        show_bill = view.findViewById(R.id.show_bill);
-        show_bill.setOnClickListener(aView-> {
-            if(final_list_dialog==null) {
-                showFinalList();
+        Observable.combineLatest(gst_perc_4_obv , rate_4_obv, count_4_obv, (charSequence, charSequence2, charSequence3)->{
+                    if(charSequence2.length()!=0){
+
+                        return true;
+                    }return false;
+                }
+        ).subscribe(aBoolean -> {
+            if(aBoolean){
+                float gst = Integer.parseInt(gst_perc_4.getText().toString())/2;
+                float rate=Float.parseFloat(rate_4.getText().toString());
+                int qnty= Integer.parseInt(count_4.getText().toString());
+                double gst_amount=rate*qnty*gst/100;
+                double tot_amount=rate*qnty;
+                gst_amnt_4.setText(String.format("%.1f", gst_amount));
+                total_amnt_4.setText(String.format("%.1f", (tot_amount-gst_amount*2)));
+
             }
         });
-        item_list= view.findViewById(R.id.item_list);
-        add_item= view.findViewById(R.id.add_item);
-        add_item.setOnClickListener(view1 -> {
-            if(add_bill_item_dialog==null) {
-                showAddItemDialog(new EntryItem());
+
+
+        Observable.combineLatest(gst_perc_5_obv , rate_5_obv, count_5_obv, (charSequence, charSequence2, charSequence3)->{
+                    if(charSequence2.length()!=0){
+                      return true;
+                    }return false;
+                }
+        ).subscribe(aBoolean -> {
+            if(aBoolean){
+                float gst = Integer.parseInt(gst_perc_5.getText().toString())/2;
+                float rate=Float.parseFloat(rate_5.getText().toString());
+                int qnty= Integer.parseInt(count_5.getText().toString());
+                double gst_amount=rate*qnty*gst/100;
+                double tot_amount=rate*qnty;
+                gst_amnt_5.setText(String.format("%.1f", gst_amount));
+                total_amnt_5.setText(String.format("%.1f", (tot_amount-gst_amount*2)));
+
             }
-
-
         });
 
 
-        add_item.setOnClickListener(view12 -> showAddItemDialog(new EntryItem()));
+        Observable<CharSequence> total_amnt_1_obv= RxTextView.textChanges(total_amnt_1);
+        Observable<CharSequence> total_amnt_2_obv= RxTextView.textChanges(total_amnt_2);
+        Observable<CharSequence> total_amnt_3_obv= RxTextView.textChanges(total_amnt_3);
+        Observable<CharSequence> total_amnt_4_obv= RxTextView.textChanges(total_amnt_4);
+        Observable<CharSequence> total_amnt_5_obv= RxTextView.textChanges(total_amnt_4);
 
-        item_list.setLayoutManager(new GridLayoutManager(getContext(),1));
 
-        itemAdapter=new ItemAdapter(getContext(), items, pos1 -> {
-            if(add_bill_item_dialog==null){
-                showAddItemDialog(items.get(pos1));
+        Observable.combineLatest(total_amnt_1_obv , total_amnt_2_obv, total_amnt_3_obv,total_amnt_4_obv,total_amnt_5_obv, (charSequence, charSequence2, charSequence3,charSequence4,charSequence5)->{
+                    if(charSequence.length()!=0 || charSequence2.length()!=0||charSequence3.length()!=0||charSequence4.length()!=0||charSequence5.length()!=0){
+                        return true;
+                    }return false;
+        }
+        ).subscribe(aBoolean -> {
+            if(aBoolean){
+                float t1=total_amnt_1.getText().length()!=0?Float.parseFloat(total_amnt_1.getText().toString()):0.0f;
+                float t2=total_amnt_2.getText().length()!=0?Float.parseFloat(total_amnt_2.getText().toString()):0.0f;
+                float t3=total_amnt_3.getText().length()!=0?Float.parseFloat(total_amnt_3.getText().toString()):0.0f;
+                float t4=total_amnt_4.getText().length()!=0?Float.parseFloat(total_amnt_4.getText().toString()):0.0f;
+                float t5=total_amnt_5.getText().length()!=0?Float.parseFloat(total_amnt_5.getText().toString()):0.0f;
+                total_amnt.setText(String.format("%.1f",(t1+t2+t3+t4+t5)));
             }
         });
-        item_list.setAdapter(itemAdapter);
+
+
+
+
+        Observable<CharSequence> gst_amnt_1_obv= RxTextView.textChanges(gst_amnt_1);
+        Observable<CharSequence> gst_amnt_2_obv= RxTextView.textChanges(gst_amnt_2);
+        Observable<CharSequence> gst_amnt_3_obv= RxTextView.textChanges(gst_amnt_3);
+        Observable<CharSequence> gst_amnt_4_obv= RxTextView.textChanges(gst_amnt_4);
+        Observable<CharSequence> gst_amnt_5_obv= RxTextView.textChanges(gst_amnt_4);
+
+        Observable.combineLatest(gst_amnt_1_obv, gst_amnt_2_obv, gst_amnt_3_obv,gst_amnt_4_obv,gst_amnt_5_obv, (charSequence, charSequence2, charSequence3,charSequence4,charSequence5)->{
+                    if(charSequence.length()!=0 || charSequence2.length()!=0||charSequence3.length()!=0||charSequence4.length()!=0||charSequence5.length()!=0){
+
+                        return true;
+                    }return false;
+                }
+        ).subscribe(aBoolean -> {
+            if(aBoolean){
+                float t1=gst_amnt_1.getText().length()!=0?Float.parseFloat(gst_amnt_1.getText().toString()):0.0f;
+                float t2=gst_amnt_2.getText().length()!=0?Float.parseFloat(gst_amnt_2.getText().toString()):0.0f;
+                float t3=gst_amnt_3.getText().length()!=0?Float.parseFloat(gst_amnt_3.getText().toString()):0.0f;
+                float t4=gst_amnt_4.getText().length()!=0?Float.parseFloat(gst_amnt_4.getText().toString()):0.0f;
+                float t5=gst_amnt_5.getText().length()!=0?Float.parseFloat(gst_amnt_5.getText().toString()):0.0f;
+                gst_amnt_tot.setText(String.format("%.1f",(t1+t2+t3+t4+t5)));
+            }
+        });
+
+        Observable<CharSequence> gst_amnt_tot_obv= RxTextView.textChanges(gst_amnt_tot);
+        Observable<CharSequence> total_amnt_obv= RxTextView.textChanges(total_amnt);
+        Observable.combineLatest(gst_amnt_tot_obv,total_amnt_obv, (charSequence, charSequence2)->{
+                    if(charSequence.length()!=0 || charSequence2.length()!=0){
+                        return true;
+                    }return false;
+                }
+        ).subscribe(aBoolean -> {
+            if(aBoolean){
+                float t1=gst_amnt_tot.getText().length()!=0?Float.parseFloat(gst_amnt_tot.getText().toString()):0.0f;
+                float t2=total_amnt.getText().length()!=0?Float.parseFloat(total_amnt.getText().toString()):0.0f;
+                total.setText(String.format("%.1f",(t1+t2)));
+            }
+        });
+
+
+        dec_amnt_bnt_1.setOnClickListener(click->{
+            changeCount(count_1,0);
+        });
+        dec_amnt_bnt_2.setOnClickListener(click->{
+            changeCount(count_2,0);
+        });
+        dec_amnt_bnt_3.setOnClickListener(click->{
+            changeCount(count_3,0);
+        });
+        dec_amnt_bnt_4.setOnClickListener(click->{
+            changeCount(count_4,0);
+        });
+        dec_amnt_bnt_5.setOnClickListener(click->{
+            changeCount(count_5,0);
+        });
+        inc_amnt_bnt_1.setOnClickListener(click->{
+            changeCount(count_1,1);
+        });
+        inc_amnt_bnt_2.setOnClickListener(click->{
+            changeCount(count_2,1);
+        });
+        inc_amnt_bnt_3.setOnClickListener(click->{
+            changeCount(count_3,1);
+        });
+        inc_amnt_bnt_4.setOnClickListener(click->{
+            changeCount(count_4,1);
+        });
+        inc_amnt_bnt_5.setOnClickListener(click->{
+            changeCount(count_5,1);
+        });
+
+        gst_perc_1.setOnClickListener(click->{
+            changeGSTSlab(gst_perc_1);
+        });
+        gst_perc_2.setOnClickListener(click->{
+            changeGSTSlab(gst_perc_2);
+        });
+        gst_perc_3.setOnClickListener(click->{
+            changeGSTSlab(gst_perc_3);
+        });
+        gst_perc_4.setOnClickListener(click->{
+            changeGSTSlab(gst_perc_4);
+        });
+        gst_perc_5.setOnClickListener(click->{
+            changeGSTSlab(gst_perc_5);
+        });
+
+        refresh_page.setOnClickListener(click->{
+            rate_1.setText("");
+            rate_2.setText("");
+            rate_3.setText("");
+            rate_4.setText("");
+            rate_5.setText("");
+
+            gst_perc_1.setText(Constants.GSTSlab[3]);
+            gst_perc_2.setText(Constants.GSTSlab[3]);
+            gst_perc_3.setText(Constants.GSTSlab[3]);
+            gst_perc_4.setText(Constants.GSTSlab[3]);
+            gst_perc_5.setText(Constants.GSTSlab[3]);
+
+            count_1.setText("1");
+            count_2.setText("1");
+            count_3.setText("1");
+            count_4.setText("1");
+            count_5.setText("1");
+        });
+
         return  view;
     }
 
@@ -140,224 +372,47 @@ public class AddItemFragment extends Fragment {
 
 
 
-    boolean select_instrument_show=true;
-    int item_no=0;
-
-
-    void showAddItemDialog(EntryItem item){
-        add_bill_item_dialog=new Dialog(getActivity(),R.style.MyDialogTheme);
-        add_bill_item_dialog.getWindow().getAttributes().windowAnimations=R.style.DialogAnimation;
-        add_bill_item_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        add_bill_item_dialog.setContentView(R.layout.bill_entry_dialog);
-        item_no=items.size();
-
-
-        final EntryHolder holder=new EntryHolder(add_bill_item_dialog);
-        Observable<CharSequence> qnty_obv= RxTextView.textChanges(holder.sell_count);
-        Observable<CharSequence> price_obv= RxTextView.textChanges(holder.price);
-        Observable<CharSequence> tax_obv= RxTextView.textChanges(holder.gst);
-
-        Observable.combineLatest( qnty_obv, price_obv, tax_obv, ( charSequence, charSequence2, charSequence3) -> {
-            if(charSequence.length()!=0 && !charSequence.toString().equals("0") && charSequence2.length()!=0 &&  charSequence3.length()!=0){
-                return true;
-            }
-            return false;
-        }).subscribe(aBoolean -> {
-            holder.add.setEnabled(aBoolean);
-            holder.add.setTextColor(aBoolean?getResources().getColor(R.color.colorPrimary):getResources().getColor(R.color.light_grey));
-        });
-
-
-        qnty_obv.debounce(2000, TimeUnit.MILLISECONDS)
-                .subscribe(text->{
-                    item.setQty(Integer.parseInt(holder.sell_count.getText().toString().length()==0?"0":holder.sell_count.getText().toString()));
-                });
-        price_obv.debounce(2000, TimeUnit.MILLISECONDS)
-                .subscribe(text->{
-                    item.setPrice(Double.parseDouble(holder.price.getText().toString().length()==0?"0":holder.price.getText().toString()));
-                });
-        tax_obv.debounce(2000, TimeUnit.MILLISECONDS)
-                .subscribe(text->{
-                    item.setTax(Double.parseDouble(holder.gst.getText().toString().length()==0?"0":holder.gst.getText().toString()));
-                });
-
-        if(item.getQty()!=0) {
-            select_instrument_show=false;
-
-           // holder.item_list_layout.animate().translationY(600).setDuration(300);
-           // holder.item_name.setText(item.getItemName());
-            holder.price.setText(String.valueOf(item.getPrice()/item.getQty()));
-            holder.gst.setText(String.valueOf(item.getTax()));
-            holder.sell_count.setText(String.valueOf(item.getQty()));
-            items.remove(item);
-            listCount.onNext(items.size());
-        }
-
-        holder.inc_sell_count.setOnClickListener(view -> {
-            String qty= holder.sell_count.getText().toString();
-            if(qty.length()==0){
-                qty="0";
-            }
-           holder.sell_count.setText(String.valueOf(Integer.parseInt(qty)+1));
-
-        });
-
-        holder.dec_sell_count.setOnClickListener(view -> {
-            String qty= holder.sell_count.getText().toString();
-            if(qty.length()==0){
-                qty="0";
-            }
-            holder.sell_count.setText(String.valueOf(Integer.parseInt(qty)-1));
-        });
-
-        holder.inc_sell_count_layout.setOnClickListener(view -> {
-            String qty= holder.sell_count.getText().toString();
-            if(qty.length()==0){
-                qty="0";
-            }
-            holder.sell_count.setText(String.valueOf(Integer.parseInt(qty)+1));
-
-        });
-
-        holder.dec_sell_count_layout.setOnClickListener(view -> {
-            String qty= holder.sell_count.getText().toString();
-            if(qty.length()==0){
-                qty="0";
-            }
-            holder.sell_count.setText(String.valueOf(Integer.parseInt(qty)-1));
-        });
 
 
 
 
-       holder.cancel.setOnClickListener(view -> {
-           add_bill_item_dialog.dismiss();
-
-               }
-       );
-
-       holder.add.setOnClickListener(view -> {
-           add_bill_item_dialog.dismiss();
-           item.setQty(Integer.parseInt(holder.sell_count.getText().toString().trim()));
-           item.setPrice(item.getPrice()*item.getQty());
-           items.add(item);
-           listCount.onNext(items.size());
-           itemAdapter.notifyDataSetChanged();
-
-       });
-
-
-       add_bill_item_dialog.setOnDismissListener(view->{
-           add_bill_item_dialog=null;
-           if(item_no>items.size()) {
-               items.add(item);
-               listCount.onNext(items.size());
-               itemAdapter.notifyDataSetChanged();
-           }
-       });
-       add_bill_item_dialog.show();
-       add_bill_item_dialog.setCancelable(true);
-    }
 
 
 
 
-    class EntryHolder{
-
-        //ImageButton item_img;
-        //TextView item_name;
-        LinearLayout inc_sell_count_layout;
-        LinearLayout dec_sell_count_layout;
-        ImageButton inc_sell_count;
-        ImageButton dec_sell_count;
-        EditText sell_count;
-        EditText price;
-        EditText gst;
-        Button add;
-        Button cancel;
-       // LinearLayout item_list_layout;
-       // RecyclerView instrument_list;
 
 
-        EntryHolder(Dialog dialog){
-
-            //item_img=(ImageButton)dialog.findViewById(R.id.item_type_img);
-            //item_name=(PStoreTextViewBold)dialog.findViewById(R.id.item_type_name);
-
-            inc_sell_count_layout=dialog.findViewById(R.id.inc_sell_count_layout);
-            dec_sell_count_layout=dialog.findViewById(R.id.dec_sell_count_layout);
-            inc_sell_count=(ImageButton)dialog.findViewById(R.id.inc_sell_count);
-            dec_sell_count=(ImageButton)dialog.findViewById(R.id.dec_sell_count);
-            sell_count=(PStoreEditTextBold) dialog.findViewById(R.id.sell_count);
-
-            price=(PStoreEditTextBold)dialog.findViewById(R.id.item_price);
-            gst=(PStoreEditTextBold)dialog.findViewById(R.id.item_gst);
-
-            add=(Button)dialog.findViewById(R.id.add);
-            add.setEnabled(false);
-            cancel=(Button)dialog.findViewById(R.id.cancel);
-
-        }
-
-    }
 
 
-    void showFinalList(){
-        final_list_dialog=new Dialog(getActivity(),R.style.MyDialogTheme);
-        final_list_dialog.getWindow().getAttributes().windowAnimations=R.style.DialogAnimation1;
-        final_list_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        final_list_dialog.setContentView(R.layout.final_bill_dialog);
-
-        final  FinalListHolder holder=new FinalListHolder(final_list_dialog);
-        FinaltemAdapter finaltemAdapter=new FinaltemAdapter(getContext(),items);
-        holder.final_list.setLayoutManager(new GridLayoutManager(getContext(),1));
-        holder.final_list.setAdapter(finaltemAdapter);
-
-        double tot_cgst=0.0f;
-        double tot_price=0.0f;
-        double tot_original_price=0.0f;
-        double percentage=0.0f;
-        for(EntryItem item: items){
-            percentage=item.getTax()/100;
-            tot_price+=Math.round(item.getPrice());
-            tot_original_price+=Math.round(item.getPrice()-((percentage*item.getPrice())*100.0)/100.0);
-            tot_cgst=Math.ceil((tot_price-tot_original_price)/2);
-        }
 
 
-        holder.total_price.setText("Rs. "+String.valueOf(tot_original_price+tot_cgst+tot_cgst));
-        holder.total_original_price.setText(String.valueOf(tot_original_price));
-        holder.total_cgst.setText(String.valueOf(tot_cgst));
-        holder.total_sgst.setText(String.valueOf(tot_cgst));
-
-
-        final_list_dialog.setOnDismissListener(view->{
-            final_list_dialog=null;
-        });
-        final_list_dialog.show();
-        final_list_dialog.setCancelable(true);
-    }
-
-    class FinalListHolder{
-
-        RecyclerView final_list;
-        TextView total_price;
-        TextView total_original_price;
-        TextView total_cgst;
-        TextView total_sgst;
-        FinalListHolder(Dialog dialog){
-            final_list= dialog.findViewById(R.id.final_list);
-            total_price=dialog.findViewById(R.id.total_price);
-            total_original_price=dialog.findViewById(R.id.total_original);
-            total_cgst=dialog.findViewById(R.id.total_cgst);
-            total_sgst=dialog.findViewById(R.id.total_sgst);
-        }
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("GENERATE BILL");
+    }
+
+    /**
+
+     * @param count
+     * @param order dec(0) or inc(1)
+     */
+    void changeCount(EditText count, int order){
+        int c=Integer.parseInt(count.getText().toString());
+        if(order==0 && c!=0){
+            count.setText(String.valueOf(c-1));
+        }else if(order==1){
+            count.setText(String.valueOf(c+1));
+        }
+
+    }
+
+    void changeGSTSlab(TextView gstSlab){
+        int gst=Integer.parseInt(gstSlab.getText().toString());
+        int index= Arrays.binarySearch(Constants.GSTSlab,gst);
+        index=index<Constants.GSTSlab.length-1?index+1:0;
+        gstSlab.setText(String.valueOf(Constants.GSTSlab[index]));
     }
 
 
