@@ -21,12 +21,15 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.store.pawan.pawanstore.Adapter.AccountAdapter;
 import com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewItalic;
 import com.store.pawan.pawanstore.DAO.AccountViewModel;
+import com.store.pawan.pawanstore.DAO.DetailsViewModelFactory;
 import com.store.pawan.pawanstore.DAO.Injection;
 import com.store.pawan.pawanstore.DAO.AccountViewModelFactory;
+import com.store.pawan.pawanstore.DAO.PaymentDetailsViewModel;
 import com.store.pawan.pawanstore.R;
 import com.store.pawan.pawanstore.Utility.Constants;
 import com.store.pawan.pawanstore.Utility.PStoreDataBase;
 import com.store.pawan.pawanstore.entities.Account;
+import com.store.pawan.pawanstore.entities.PaymentDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +66,8 @@ public class PayAccountFragment extends Fragment {
 
     private AccountViewModelFactory accountViewModelFactory;
     private AccountViewModel accountViewModel;
+    private DetailsViewModelFactory detailsViewModelFactory;
+    private PaymentDetailsViewModel detailsViewModel;
     private final CompositeDisposable disposable=new CompositeDisposable();
 
     private PublishSubject<Integer> listCount;
@@ -148,8 +153,10 @@ public class PayAccountFragment extends Fragment {
             showAddItemDialog(null);
         });
 
-        accountViewModelFactory = Injection.provideViewModelFactory(getActivity());
+        accountViewModelFactory = Injection.provideAccountViewModelFactory(getActivity());
         accountViewModel= ViewModelProviders.of(this, accountViewModelFactory).get(AccountViewModel.class);
+        detailsViewModelFactory = Injection.provideDetailsViewModelFactory(getActivity());
+        detailsViewModel= ViewModelProviders.of(this, detailsViewModelFactory).get(PaymentDetailsViewModel.class);
 
         return  view;
     }

@@ -151,7 +151,7 @@ public class LendAccountFragment extends Fragment {
             showAddItemDialog(null);
         });
 
-        accountViewModelFactory = Injection.provideViewModelFactory(getActivity());
+        accountViewModelFactory = Injection.provideAccountViewModelFactory(getActivity());
         accountViewModel= ViewModelProviders.of(this, accountViewModelFactory).get(AccountViewModel.class);
 
         return  view;

@@ -13,7 +13,7 @@ public class DetailsViewModelFactory implements ViewModelProvider.Factory{
 
     public DetailsViewModelFactory(  PaymentDetailsDataSource paymentDetailsDataSource) {
         this.paymentDetailsDataSource = paymentDetailsDataSource;
-        
+
     }
 
     @Override
@@ -21,6 +21,6 @@ public class DetailsViewModelFactory implements ViewModelProvider.Factory{
         if (modelClass.isAssignableFrom(PaymentDetailsViewModel.class)) {
             return (T) new PaymentDetailsViewModel(paymentDetailsDataSource);
         }
-        throw new IllegalArgumentException("Unknown ViewModel class");
+        throw new IllegalArgumentException("Unknown ViewModel Class");
     }
 }

@@ -1,6 +1,7 @@
 package com.store.pawan.pawanstore.Utility;
 
 import com.store.pawan.pawanstore.DAO.AccountDAO;
+import com.store.pawan.pawanstore.DAO.PaymentDetailsDAO;
 import com.store.pawan.pawanstore.entities.Account;
 import com.store.pawan.pawanstore.DAO.AccountDataSource;
 
@@ -12,10 +13,10 @@ import io.reactivex.Flowable;
  * Created by shwetakumar on 10/17/17.
  */
 
-public class LocalPStoreDataSource implements AccountDataSource {
+public class LocalAccountDataSource implements AccountDataSource {
     private final AccountDAO accountDAO;
 
-    public LocalPStoreDataSource(AccountDAO accountDAO) {
+    public LocalAccountDataSource(AccountDAO accountDAO) {
         this.accountDAO = accountDAO;
     }
 
