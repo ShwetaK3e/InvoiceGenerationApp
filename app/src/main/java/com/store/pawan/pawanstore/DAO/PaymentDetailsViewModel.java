@@ -27,17 +27,17 @@ public class PaymentDetailsViewModel extends ViewModel{
 
     }
 
-    public Flowable<List<PaymentDetails>> getAllDeatails(int accountId){
+    public Flowable<List<PaymentDetails>> getAllDetails(int accountId){
         return paymentDetailsDataSource.getPaymentDetails(accountId);
     }
 
-    public Completable updateUser(PaymentDetails paymentDetails){
+    public Completable updatePayments(PaymentDetails paymentDetails){
         return new CompletableFromAction(()->{
             paymentDetailsDataSource.insertOrUpdateDetails(paymentDetails);
         });
     }
 
-    public  Completable deleteUser(PaymentDetails paymentDetails){
+    public  Completable deletePayments(PaymentDetails paymentDetails){
         return  new CompletableFromAction(()->{
             paymentDetailsDataSource.deleteDetails(paymentDetails);
         }

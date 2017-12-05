@@ -61,6 +61,12 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
         holder.acc_del.setOnClickListener(click->{
             onMyItemClickListener.onClick(position,"delete");
         });
+
+        holder.acc_img.setOnClickListener(click->
+        {
+            onMyItemClickListener.onClick(position,"history");
+
+        });
     }
 
     @Override

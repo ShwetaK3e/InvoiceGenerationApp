@@ -1,9 +1,11 @@
 package com.store.pawan.pawanstore.fragment;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,7 +44,7 @@ import rx.subjects.PublishSubject;
 public class AddItemFragment extends Fragment {
 
 
-
+    LinearLayout gst_1,gst_2,gst_3,gst_4,gst_5;
     TextView gst_perc_1,gst_perc_2,gst_perc_3,gst_perc_4,gst_perc_5;
     EditText rate_1,rate_2,rate_3,rate_4,rate_5;
     ImageButton dec_amnt_bnt_1,dec_amnt_bnt_2,dec_amnt_bnt_3,dec_amnt_bnt_4,dec_amnt_bnt_5;
@@ -71,6 +73,12 @@ public class AddItemFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.new_bill_record_layout, container, false);
+
+        gst_1=view.findViewById(R.id.gst_1);
+        gst_2=view.findViewById(R.id.gst_2);
+        gst_3=view.findViewById(R.id.gst_3);
+        gst_4=view.findViewById(R.id.gst_4);
+        gst_5=view.findViewById(R.id.gst_5);
 
         gst_perc_1=view.findViewById(R.id.gst_perc_1);
         gst_perc_2=view.findViewById(R.id.gst_perc_2);
@@ -144,14 +152,16 @@ public class AddItemFragment extends Fragment {
         }
         ).subscribe(aBoolean -> {
             if(aBoolean){
-                float gst = Integer.parseInt(gst_perc_1.getText().toString())/2;
+                float gst = Integer.parseInt(gst_perc_1.getText().toString())/2.0f;
                 float rate=Float.parseFloat(rate_1.getText().toString());
                 int qnty= Integer.parseInt(count_1.getText().toString());
                 double gst_amount=rate*qnty*gst/100;
                 double tot_amount=rate*qnty;
                 gst_amnt_1.setText(String.format("%.1f", gst_amount));
                 total_amnt_1.setText(String.format("%.1f", (tot_amount-gst_amount*2)));
-
+            }else{
+                gst_amnt_1.setText("");
+                total_amnt_1.setText("");
             }
         });
 
@@ -162,14 +172,16 @@ public class AddItemFragment extends Fragment {
                 }
         ).subscribe(aBoolean -> {
             if(aBoolean){
-                float gst = Integer.parseInt(gst_perc_2.getText().toString())/2;
+                float gst = Integer.parseInt(gst_perc_2.getText().toString())/2.0f;
                 float rate=Float.parseFloat(rate_2.getText().toString());
                 int qnty= Integer.parseInt(count_2.getText().toString());
                 double gst_amount=rate*qnty*gst/100;
                 double tot_amount=rate*qnty;
                 gst_amnt_2.setText(String.format("%.1f", gst_amount));
                 total_amnt_2.setText(String.format("%.1f", (tot_amount-gst_amount*2)));
-
+            }else{
+                gst_amnt_2.setText("");
+                total_amnt_2.setText("");
             }
         });
 
@@ -182,14 +194,16 @@ public class AddItemFragment extends Fragment {
                 }
         ).subscribe(aBoolean -> {
             if(aBoolean){
-                float gst = Integer.parseInt(gst_perc_3.getText().toString())/2;
+                float gst = Integer.parseInt(gst_perc_3.getText().toString())/2.0f;
                 float rate=Float.parseFloat(rate_3.getText().toString());
                 int qnty= Integer.parseInt(count_3.getText().toString());
                 double gst_amount=rate*qnty*gst/100;
                 double tot_amount=rate*qnty;
                 gst_amnt_3.setText(String.format("%.1f", gst_amount));
                 total_amnt_3.setText(String.format("%.1f", (tot_amount-gst_amount*2)));
-
+            }else{
+                gst_amnt_3.setText("");
+                total_amnt_3.setText("");
             }
         });
 
@@ -201,14 +215,16 @@ public class AddItemFragment extends Fragment {
                 }
         ).subscribe(aBoolean -> {
             if(aBoolean){
-                float gst = Integer.parseInt(gst_perc_4.getText().toString())/2;
+                float gst = Integer.parseInt(gst_perc_4.getText().toString())/2.0f;
                 float rate=Float.parseFloat(rate_4.getText().toString());
                 int qnty= Integer.parseInt(count_4.getText().toString());
                 double gst_amount=rate*qnty*gst/100;
                 double tot_amount=rate*qnty;
                 gst_amnt_4.setText(String.format("%.1f", gst_amount));
                 total_amnt_4.setText(String.format("%.1f", (tot_amount-gst_amount*2)));
-
+            }else{
+                gst_amnt_4.setText("");
+                total_amnt_4.setText("");
             }
         });
 
@@ -220,14 +236,16 @@ public class AddItemFragment extends Fragment {
                 }
         ).subscribe(aBoolean -> {
             if(aBoolean){
-                float gst = Integer.parseInt(gst_perc_5.getText().toString())/2;
+                float gst = Integer.parseInt(gst_perc_5.getText().toString())/2.0f;
                 float rate=Float.parseFloat(rate_5.getText().toString());
                 int qnty= Integer.parseInt(count_5.getText().toString());
                 double gst_amount=rate*qnty*gst/100;
                 double tot_amount=rate*qnty;
                 gst_amnt_5.setText(String.format("%.1f", gst_amount));
                 total_amnt_5.setText(String.format("%.1f", (tot_amount-gst_amount*2)));
-
+            }else{
+                gst_amnt_5.setText("");
+                total_amnt_5.setText("");
             }
         });
 
@@ -292,7 +310,7 @@ public class AddItemFragment extends Fragment {
             if(aBoolean){
                 float t1=gst_amnt_tot.getText().length()!=0?Float.parseFloat(gst_amnt_tot.getText().toString()):0.0f;
                 float t2=total_amnt.getText().length()!=0?Float.parseFloat(total_amnt.getText().toString()):0.0f;
-                total.setText(String.format("%.1f",(t1+t2)));
+                total.setText("Rs. "+String.format("%.1f",(t1*2+t2)));
             }
         });
 
@@ -344,24 +362,38 @@ public class AddItemFragment extends Fragment {
             changeGSTSlab(gst_perc_5);
         });
 
+
+        gst_1.setOnClickListener(click->{
+            changeGSTSlab(gst_perc_1);
+        });
+        gst_2.setOnClickListener(click->{
+            changeGSTSlab(gst_perc_2);
+        });
+        gst_3.setOnClickListener(click->{
+            changeGSTSlab(gst_perc_3);
+        });
+        gst_4.setOnClickListener(click->{
+            changeGSTSlab(gst_perc_4);
+        });
+        gst_5.setOnClickListener(click->{
+            changeGSTSlab(gst_perc_5);
+        });
+
         refresh_page.setOnClickListener(click->{
-            rate_1.setText("");
-            rate_2.setText("");
-            rate_3.setText("");
-            rate_4.setText("");
-            rate_5.setText("");
 
-            gst_perc_1.setText(Constants.GSTSlab[3]);
-            gst_perc_2.setText(Constants.GSTSlab[3]);
-            gst_perc_3.setText(Constants.GSTSlab[3]);
-            gst_perc_4.setText(Constants.GSTSlab[3]);
-            gst_perc_5.setText(Constants.GSTSlab[3]);
 
-            count_1.setText("1");
-            count_2.setText("1");
-            count_3.setText("1");
-            count_4.setText("1");
-            count_5.setText("1");
+        });
+
+        refresh_page.setOnClickListener(click->{
+            new AlertDialog.Builder(getActivity(),android.R.style.Theme_Material_Dialog_Alert)
+                    .setTitle("New Bill")
+                    .setMessage("Are you sure you want to delete the current bill?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                       refreshBill();
+                    })
+                    .setNegativeButton("No",(dialog, which) -> {
+                          dialog.dismiss();
+                    } ).show();
         });
 
         return  view;
@@ -413,6 +445,37 @@ public class AddItemFragment extends Fragment {
         int index= Arrays.binarySearch(Constants.GSTSlab,gst);
         index=index<Constants.GSTSlab.length-1?index+1:0;
         gstSlab.setText(String.valueOf(Constants.GSTSlab[index]));
+    }
+
+    void refreshBill(){
+        rate_1.setText("");
+        rate_2.setText("");
+        rate_3.setText("");
+        rate_4.setText("");
+        rate_5.setText("");
+
+        gst_perc_1.setText(String.valueOf(Constants.GSTSlab[3]));
+        gst_perc_2.setText(String.valueOf(Constants.GSTSlab[3]));
+        gst_perc_3.setText(String.valueOf(Constants.GSTSlab[3]));
+        gst_perc_4.setText(String.valueOf(Constants.GSTSlab[3]));
+        gst_perc_5.setText(String.valueOf(Constants.GSTSlab[3]));
+
+
+        count_1.setText("1");
+        count_2.setText("1");
+        count_3.setText("1");
+        count_4.setText("1");
+        count_5.setText("1");
+
+        gst_amnt_1.setText("");
+        gst_amnt_2.setText("");
+        gst_amnt_3.setText("");
+        gst_amnt_4.setText("");
+        gst_amnt_5.setText("");
+
+        gst_amnt_tot.setText("");
+        total_amnt.setText("");
+        total.setText("");
     }
 
 

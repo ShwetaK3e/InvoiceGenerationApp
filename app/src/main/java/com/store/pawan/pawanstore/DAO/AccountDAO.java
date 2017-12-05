@@ -39,7 +39,7 @@ public interface AccountDAO {
     @Delete
     void delete(Account account);
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
+    @Update
     void updateAccount(Account account);
 
 }

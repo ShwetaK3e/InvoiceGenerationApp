@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:background="@color/translucent_bg"
+    android:gravity="center">
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/bg_dialog"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+        <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewBold
+            android:layout_width="0dp"
+            android:layout_weight="0.6"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:gravity="start"
+            android:text="ACCOUNT NAME"
+            android:id="@+id/account_name"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimary"/>
+            <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewBold
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:gravity="end|center_vertical"
+                android:text="Rs 1000000"
+                android:id="@+id/total_amnt"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                />
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="5dp"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="5dp"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/history_list"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+
+            >
+
+        </android.support.v7.widget.RecyclerView>
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/total_layout"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="@color/white">
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary"
+                android:layout_marginBottom="5dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary"
+                android:layout_marginBottom="10dp" />
+
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="match_parent"
+                    android:padding="5dp">
+
+                    <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewBold
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="500000"
+                        android:padding="5dp"
+                        android:background="@drawable/bg_holder"
+                        android:textColor="@android:color/holo_green_dark"
+
+                        android:id="@+id/paid"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="match_parent"
+                    android:padding="5dp">
+
+                    <com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewBold
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="500000"
+                        android:padding="5dp"
+                        android:background="@drawable/bg_holder"
+                        android:textColor="@color/red"
+
+                        android:id="@+id/remaining"/>
+
+                </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+
+
+
+
+
+</RelativeLayout>

@@ -58,6 +58,22 @@ public class Constants {
 
     }
 
+    public enum PaymentMode{
+        PAID(0),
+        REMAINING(1);
+
+        int payment_mode;
+
+        PaymentMode(int mode) {
+            this.payment_mode=mode;
+        }
+
+        public int getPayment_mode(){
+            return payment_mode;
+        }
+
+    }
+
     public static int[] GSTSlab={5,12,18,28};
 
 

@@ -28,13 +28,19 @@ public class AccountViewModel extends ViewModel {
         return accountDataSource.getAccounts(mode);
     }
 
-    public Completable updateUser(Account account){
+    public Completable addAccount(Account account){
         return new CompletableFromAction(()->{
-            accountDataSource.insertOrUpdateAccount(account);
+            accountDataSource.insertAccount(account);
         });
     }
 
-    public  Completable deleteUser(Account account){
+    public Completable updateAccount(Account account){
+        return new CompletableFromAction(()->{
+            accountDataSource.updateAccount(account);
+        });
+    }
+
+    public  Completable deleteAccount(Account account){
         return  new CompletableFromAction(()->{
             accountDataSource.deleteAccount(account);
           }

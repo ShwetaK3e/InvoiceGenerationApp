@@ -16,7 +16,9 @@ public interface AccountDataSource {
 
     Flowable<List<Account>> getAccounts(int mode);
 
-    void insertOrUpdateAccount(Account account);
+    void insertAccount(Account account);
+
+    void updateAccount(Account account);
 
     void deleteAccount(Account account);
 

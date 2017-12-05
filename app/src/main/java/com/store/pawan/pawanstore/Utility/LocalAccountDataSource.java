@@ -27,8 +27,13 @@ public class LocalAccountDataSource implements AccountDataSource {
     }
 
     @Override
-    public void insertOrUpdateAccount(Account account) {
+    public void insertAccount(Account account) {
          accountDAO.addAccount(account);
+    }
+
+    @Override
+    public void updateAccount(Account account) {
+        accountDAO.updateAccount(account);
     }
 
     @Override

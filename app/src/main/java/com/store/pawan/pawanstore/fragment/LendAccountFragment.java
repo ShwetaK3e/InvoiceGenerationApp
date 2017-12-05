@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,21 +16,28 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.store.pawan.pawanstore.Adapter.AccountAdapter;
+import com.store.pawan.pawanstore.Adapter.AccountHistoryAdapter;
 import com.store.pawan.pawanstore.CustomWidgets.PStoreTextViewItalic;
 import com.store.pawan.pawanstore.DAO.AccountViewModel;
+import com.store.pawan.pawanstore.DAO.DetailsViewModelFactory;
 import com.store.pawan.pawanstore.DAO.Injection;
 import com.store.pawan.pawanstore.DAO.AccountViewModelFactory;
+import com.store.pawan.pawanstore.DAO.PaymentDetailsViewModel;
 import com.store.pawan.pawanstore.R;
 import com.store.pawan.pawanstore.Utility.Constants;
 import com.store.pawan.pawanstore.Utility.PStoreDataBase;
 import com.store.pawan.pawanstore.entities.Account;
+import com.store.pawan.pawanstore.entities.PaymentDetails;
 import com.store.pawan.pawanstore.model.EntryItem;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,7 +57,7 @@ public class LendAccountFragment extends Fragment {
     ImageButton add_account;
 
     RecyclerView accounts_list;
-    AccountAdapter adapter;
+    AccountAdapter accountAdapter;
     private PStoreDataBase dataBase;
     List<Account> lendAccounts=new ArrayList<>();
 
@@ -59,15 +67,26 @@ public class LendAccountFragment extends Fragment {
 
     //Add Dialog
     Dialog add_account_dialog;
+    Dialog add_payment_dialog;
+    Dialog account_history_dialog;
+
+    //history
+    List<PaymentDetails> lendAccountHistory=new ArrayList<>();
+    AccountHistoryAdapter historyAdapter;
+
 
 
 
 
     private AccountViewModelFactory accountViewModelFactory;
     private AccountViewModel accountViewModel;
+    private DetailsViewModelFactory detailsViewModelFactory ;
+    private PaymentDetailsViewModel detailsViewModel;
+
     private final CompositeDisposable disposable=new CompositeDisposable();
 
     private PublishSubject<Integer> listCount;
+
 
 
 
@@ -88,14 +107,23 @@ public class LendAccountFragment extends Fragment {
 
         accounts_list=view.findViewById(R.id.account_list);
         accounts_list.setLayoutManager(new GridLayoutManager(getContext(),1));
-        adapter=new AccountAdapter(getActivity(), lendAccounts, (pos,action) -> {
+        accountAdapter =new AccountAdapter(getActivity(), lendAccounts, (pos, action) -> {
             if(action==null) {
-                showAddItemDialog(lendAccounts.get(pos));
+                showAddPaymentDialog(lendAccounts.get(pos));
             }else if(action.equalsIgnoreCase("delete")){
-                deleteLendAccount(lendAccounts.get(pos));
+                new AlertDialog.Builder(getActivity(),android.R.style.Theme_Material_Dialog_Alert)
+                        .setTitle("New Bill")
+                        .setMessage("Are you sure you want to delete the current bill?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            deleteLendAccount(lendAccounts.get(pos));
+                        })
+                        .setNegativeButton("No",null)
+                        .show();
+            }else if(action.equalsIgnoreCase("history")){
+                showAccountHistoryDialog(lendAccounts.get(pos));
             }
         });
-        accounts_list.setAdapter(adapter);
+        accounts_list.setAdapter(accountAdapter);
 
         no_acc_text=view.findViewById(R.id.no_acc_text);
         listCount=PublishSubject.create();
@@ -119,6 +147,7 @@ public class LendAccountFragment extends Fragment {
                 }
             }
         });
+
 
 
 
@@ -148,11 +177,13 @@ public class LendAccountFragment extends Fragment {
 
         add_account=view.findViewById(R.id.add_account);
         add_account.setOnClickListener(click->{
-            showAddItemDialog(null);
+            showAddAccountDialog();
         });
 
         accountViewModelFactory = Injection.provideAccountViewModelFactory(getActivity());
         accountViewModel= ViewModelProviders.of(this, accountViewModelFactory).get(AccountViewModel.class);
+        detailsViewModelFactory = Injection.provideDetailsViewModelFactory(getActivity());
+        detailsViewModel= ViewModelProviders.of(this, detailsViewModelFactory).get(PaymentDetailsViewModel.class);
 
         return  view;
     }
@@ -163,27 +194,74 @@ public class LendAccountFragment extends Fragment {
 
 
 
-    private boolean inc=false,dec=false;
+    private boolean paid=false,remaining=false;
 
-
-    void showAddItemDialog(Account acc){
+    void showAddAccountDialog(){
         add_account_dialog=new Dialog(getActivity(),R.style.MyDialogTheme);
         add_account_dialog.getWindow().getAttributes().windowAnimations=R.style.DialogAnimation;
         add_account_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         add_account_dialog.setContentView(R.layout.account_entry_dialog);
 
-
-
-        final LendAccountFragment.EntryHolder holder=new LendAccountFragment.EntryHolder(add_account_dialog);
-
-
-        if(acc!=null){
-            holder.paid_amnt.setEnabled(false);
-            holder.remaining_amnt.setEnabled(false);
-        }
+        final LendAccountFragment.AccountEntryHolder holder=new LendAccountFragment.AccountEntryHolder(add_account_dialog);
 
         Observable<CharSequence> name_obv= RxTextView.textChanges(holder.account_name);
         Observable<CharSequence> tot_amnt_obv= RxTextView.textChanges(holder.total_amnt);
+
+        Observable.combineLatest(name_obv,tot_amnt_obv,(charSequence, charSequence2) -> {
+            if(charSequence.length()!=0 && charSequence2.length()!=0 && Float.parseFloat(charSequence2.toString())>0.0f)
+                return true;
+
+                return false;
+
+
+        }).subscribe(aBoolean -> {
+            holder.add.setEnabled(aBoolean);
+            holder.add.setTextColor(aBoolean?getResources().getColor(R.color.colorPrimary):getResources().getColor(R.color.light_grey));
+        });
+
+        holder.cancel.setOnClickListener(view -> {
+                    add_account_dialog.dismiss();
+                    paid=false;
+                    remaining=false;
+                }
+        );
+
+        holder.add.setOnClickListener(view -> {
+
+
+            String name=holder.account_name.getText().toString();
+            int accountMode= Constants.AccountMode.LEND.getAccountMode();
+            float total_amnt=Float.parseFloat(holder.total_amnt.getText().toString());
+            Account account = new Account(name, accountMode, total_amnt, 0.0f);
+            addLendAccount(account);
+            add_account_dialog.dismiss();
+
+        });
+
+        add_account_dialog.setOnDismissListener(view->{
+            getAllLendAccounts();
+        });
+
+
+
+        add_account_dialog.show();
+        add_account_dialog.setCancelable(true);
+
+
+    }
+
+
+    void showAddPaymentDialog(Account acc){
+        add_payment_dialog=new Dialog(getActivity(),R.style.MyDialogTheme);
+        add_payment_dialog.getWindow().getAttributes().windowAnimations=R.style.DialogAnimation;
+        add_payment_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        add_payment_dialog.setContentView(R.layout.payment_entry_dialog);
+
+
+
+        final LendAccountFragment.PaymentEntryHolder holder=new LendAccountFragment.PaymentEntryHolder(add_payment_dialog);
+
+
         Observable<CharSequence> new_amnt_obv= RxTextView.textChanges(holder.update_amnt);
 
 
@@ -203,110 +281,87 @@ public class LendAccountFragment extends Fragment {
                     @Override
                     public void onNext(CharSequence charSequence) {
 
-                        if (charSequence.length() != 0 && acc!=null) {
-                            if (inc) {
-                                holder.total_amnt.setText(String.valueOf(acc.getAmount() + Float.parseFloat(charSequence.toString())));
-                                holder.remaining_amnt.setText(String.valueOf(acc.getAmount()-acc.getPaid_amount()+Float.parseFloat(charSequence.toString())));
-                                holder.paid_amnt.setText(String.valueOf(acc.getPaid_amount()));
-                            } else if (dec) {
+                        if (charSequence.length() != 0 ) {
+                            if (paid) {
+                                holder.update.setEnabled(true);
+                                holder.update.setTextColor(getResources().getColor(R.color.colorPrimary));
                                 holder.total_amnt.setText(String.valueOf(acc.getAmount()));
                                 holder.paid_amnt.setText(String.valueOf(acc.getPaid_amount() + Float.parseFloat(charSequence.toString())));
                                 holder.remaining_amnt.setText(String.valueOf(acc.getAmount()-(acc.getPaid_amount()+Float.parseFloat(charSequence.toString()))));
+
+                            } else if (remaining) {
+                                holder.update.setEnabled(true);
+                                holder.update.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                holder.total_amnt.setText(String.valueOf(acc.getAmount() + Float.parseFloat(charSequence.toString())));
+                                holder.remaining_amnt.setText(String.valueOf(acc.getAmount()-acc.getPaid_amount()+Float.parseFloat(charSequence.toString())));
+                                holder.paid_amnt.setText(String.valueOf(acc.getPaid_amount()));
                             }
+
+                        }else{
+                            holder.update.setEnabled(false);
+                            holder.update.setTextColor(getResources().getColor(R.color.light_grey));
+                            holder.total_amnt.setText(String.valueOf(acc.getAmount()));
+                            holder.remaining_amnt.setText(String.valueOf(acc.getAmount()-acc.getPaid_amount()));
+                            holder.paid_amnt.setText(String.valueOf(acc.getPaid_amount()));
 
                         }
                     }
                 });
 
 
-        if(acc!=null){
             holder.account_name.setText(acc.getName());
             holder.total_amnt.setText(String.valueOf(acc.getAmount()));
             holder.paid_amnt.setText(String.valueOf(acc.getPaid_amount()));
             holder.remaining_amnt.setText(String.valueOf(acc.getAmount()-acc.getPaid_amount()));
-        }
 
 
-        Observable.combineLatest(name_obv,tot_amnt_obv,new_amnt_obv,(charSequence, charSequence2, charSequence3) -> {
-            if(charSequence.length()!=0 && charSequence2.length()!=0 && Float.parseFloat(charSequence2.toString())>0.0f){
-                if(acc!=null){
-                    if(charSequence3.length()!=0 && (inc || dec)) {
-                        return true;
-                    }
-                    else{
-                        return false;
-                    }
-                }else{
-                    return true;
-                }
-            }return false;
-        }).subscribe(aBoolean -> {
-            holder.add.setEnabled(aBoolean);
-            holder.add.setTextColor(aBoolean?getResources().getColor(R.color.colorPrimary):getResources().getColor(R.color.light_grey));
-        });
+
 
         holder.cancel.setOnClickListener(view -> {
-                    add_account_dialog.dismiss();
-                    inc=false;
-                    dec=false;
+                    add_payment_dialog.dismiss();
+                    paid=false;
+                    remaining=false;
                 }
         );
 
-        holder.add.setOnClickListener(view -> {
-            int id;
-            if(acc!=null) {
-                id=acc.getId();
-            }
-            String name=holder.account_name.getText().toString();
-            int accountMode= Constants.AccountMode.LEND.getAccountMode();
+        holder.update.setOnClickListener(view -> {
+            int id=acc.getId();
             float paid_amnt= (holder.paid_amnt.getText().toString().length()!=0) ? Float.parseFloat(holder.paid_amnt.getText().toString()):0.0f;
             float total_amnt=Float.parseFloat(holder.total_amnt.getText().toString());
+            float update_amnt=Float.parseFloat(holder.update_amnt.getText().toString());
+            String desc=holder.payment_desc.getText().toString();
+            int amntStatus=paid?Constants.PaymentMode.PAID.getPayment_mode():Constants.PaymentMode.REMAINING.getPayment_mode();
+            SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");
 
-            if(acc!=null) {
-                acc.setAmount(Float.parseFloat(holder.total_amnt.getText().toString()));
-                acc.setPaid_amount((holder.paid_amnt.getText().toString().length()!=0) ? Float.parseFloat(holder.paid_amnt.getText().toString()):0.0f);
-                addLendAccount(acc);
-            }else{
-                Account account = new Account(name, accountMode, total_amnt, paid_amnt);
-                addLendAccount(account);
-            }
+            acc.setAmount(total_amnt);
+            acc.setPaid_amount(paid_amnt);
+            updateLendAccount(acc);
 
-            inc=false;
-            dec=false;
-            add_account_dialog.dismiss();
+            PaymentDetails details=new PaymentDetails(id,sdf.format(new Date()),amntStatus,update_amnt,desc);
+            addLendPaymentDetails(details);
+
+
+            paid=false;
+            remaining=false;
+            add_payment_dialog.dismiss();
 
         });
 
 
 
-        holder.inc_amnt_btn.setOnClickListener(click->{
-            if(inc){
-                inc=false;
-                holder.inc_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red_ring);
+        holder.paid_amnt_btn.setOnClickListener(click->{
+            if(paid){
+                paid=false;
+                holder.paid_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green_ring);
 
             }else{
-                inc=true;
-                dec=false;
-                holder.dec_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green_ring);
-                holder.inc_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red);
+                paid=true;
+                remaining=false;
+                holder.rem_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red_ring);
+                holder.paid_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green);
                 if(holder.update_amnt.getText().length()!=0) {
-                    holder.total_amnt.setText(String.valueOf(acc.getAmount() + Float.parseFloat(holder.update_amnt.getText().toString())));
-                    holder.paid_amnt.setText(String.valueOf(acc.getPaid_amount()));
-                    holder.remaining_amnt.setText(String.valueOf(acc.getAmount() - acc.getPaid_amount() + Float.parseFloat(holder.update_amnt.getText().toString())));
-                }
-            }
-        });
-
-        holder.dec_amnt_btn.setOnClickListener(click->{
-            if(dec){
-                dec=false;
-                holder.dec_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green_ring);
-            }else{
-                dec=true;
-                inc=false;
-                holder.inc_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red_ring);
-                holder.dec_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green);
-                if(holder.update_amnt.getText().length()!=0) {
+                    holder.update.setEnabled(true);
+                    holder.update.setTextColor(getResources().getColor(R.color.colorPrimary));
                     holder.total_amnt.setText(String.valueOf(acc.getAmount()));
                     holder.paid_amnt.setText(String.valueOf(acc.getPaid_amount() + Float.parseFloat(holder.update_amnt.getText().toString())));
                     holder.remaining_amnt.setText(String.valueOf(acc.getAmount() - (acc.getPaid_amount() + Float.parseFloat(holder.update_amnt.getText().toString()))));
@@ -314,20 +369,107 @@ public class LendAccountFragment extends Fragment {
             }
         });
 
-        add_account_dialog.setOnDismissListener(view->{
+        holder.paid_amnt_layout.setOnClickListener(click->{
+            if(paid){
+                paid=false;
+                holder.paid_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green_ring);
+
+            }else{
+                paid=true;
+                remaining=false;
+                holder.rem_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red_ring);
+                holder.paid_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green);
+                if(holder.update_amnt.getText().length()!=0) {
+                    holder.update.setEnabled(true);
+                    holder.update.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    holder.total_amnt.setText(String.valueOf(acc.getAmount()));
+                    holder.paid_amnt.setText(String.valueOf(acc.getPaid_amount() + Float.parseFloat(holder.update_amnt.getText().toString())));
+                    holder.remaining_amnt.setText(String.valueOf(acc.getAmount() - (acc.getPaid_amount() + Float.parseFloat(holder.update_amnt.getText().toString()))));
+
+                }
+            }
+        });
+        holder.rem_amnt_btn.setOnClickListener(click->{
+            if(remaining){
+                remaining=false;
+                holder.rem_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red_ring);
+            }else{
+                remaining=true;
+                paid=false;
+                holder.paid_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green_ring);
+                holder.rem_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red);
+                if(holder.update_amnt.getText().length()!=0) {
+                    holder.update.setEnabled(true);
+                    holder.update.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    holder.total_amnt.setText(String.valueOf(acc.getAmount() + Float.parseFloat(holder.update_amnt.getText().toString())));
+                    holder.paid_amnt.setText(String.valueOf(acc.getPaid_amount()));
+                    holder.remaining_amnt.setText(String.valueOf(acc.getAmount() - acc.getPaid_amount() + Float.parseFloat(holder.update_amnt.getText().toString())));
+                }
+            }
+        });
+
+        holder.rem_amnt_layout.setOnClickListener(click->{
+            if(remaining){
+                remaining=false;
+                holder.rem_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red_ring);
+            }else{
+                remaining=true;
+                paid=false;
+                holder.paid_amnt_btn.setBackgroundResource(R.drawable.bg_circle_green_ring);
+                holder.rem_amnt_btn.setBackgroundResource(R.drawable.bg_circle_red);
+                if(holder.update_amnt.getText().length()!=0) {
+                    holder.update.setEnabled(true);
+                    holder.update.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    holder.total_amnt.setText(String.valueOf(acc.getAmount() + Float.parseFloat(holder.update_amnt.getText().toString())));
+                    holder.paid_amnt.setText(String.valueOf(acc.getPaid_amount()));
+                    holder.remaining_amnt.setText(String.valueOf(acc.getAmount() - acc.getPaid_amount() + Float.parseFloat(holder.update_amnt.getText().toString())));
+                }
+            }
+        });
+
+        add_payment_dialog.setOnDismissListener(view->{
             getAllLendAccounts();
         });
 
 
 
-        add_account_dialog.show();
-        add_account_dialog.setCancelable(true);
+        add_payment_dialog.show();
+        add_payment_dialog.setCancelable(true);
     }
 
 
 
 
-    class EntryHolder{
+    void showAccountHistoryDialog(Account account){
+        account_history_dialog=new Dialog(getActivity(),R.style.MyDialogTheme);
+        account_history_dialog.getWindow().getAttributes().windowAnimations=R.style.DialogAnimation;
+        account_history_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        account_history_dialog.setContentView(R.layout.acount_history);
+
+        final LendAccountFragment.AccountHistoryHolder holder=new LendAccountFragment.AccountHistoryHolder(account_history_dialog);
+
+        holder.account_name.setText(account.getName().toUpperCase());
+        holder.total_amnt.setText("Rs. "+String.valueOf(account.getAmount()));
+        holder.paid_amnt.setText("Rs. "+String.valueOf(account.getPaid_amount()));
+        holder.remaining_amnt.setText("Rs. "+String.valueOf(account.getAmount()-account.getPaid_amount()));
+
+        historyAdapter=new AccountHistoryAdapter(getContext(),lendAccountHistory);
+        getAllPaymentDetails(account.getId());
+
+        holder.history_list.setLayoutManager(new GridLayoutManager(getContext(),1));
+        holder.history_list.setAdapter(historyAdapter);
+
+
+
+        account_history_dialog.show();
+        account_history_dialog.setCancelable(true);
+
+
+    }
+
+
+
+    class PaymentEntryHolder{
 
 
         EditText account_name;
@@ -335,26 +477,52 @@ public class LendAccountFragment extends Fragment {
         EditText paid_amnt;
         EditText remaining_amnt;
         EditText update_amnt;
-        LinearLayout inc_amnt;
-        LinearLayout dec_amnt;
-        ImageButton inc_amnt_btn;
-        ImageButton dec_amnt_btn;
-        Button add;
+        LinearLayout paid_amnt_layout;
+        LinearLayout rem_amnt_layout;
+        ImageButton paid_amnt_btn;
+        ImageButton rem_amnt_btn;
+        Button update;
         Button cancel;
+        EditText payment_desc;
 
 
 
-        EntryHolder(Dialog dialog){
+        PaymentEntryHolder(Dialog dialog){
 
             account_name=dialog.findViewById(R.id.account_name);
             total_amnt=dialog.findViewById(R.id.net_amnt);
             paid_amnt=dialog.findViewById(R.id.ret_amnt);
             remaining_amnt=dialog.findViewById(R.id.remain_amnt);
             update_amnt= dialog.findViewById(R.id.new_amnt);
-            inc_amnt=dialog.findViewById(R.id.inc_amnt);
-            dec_amnt=dialog.findViewById(R.id.dec_amnt);
-            inc_amnt_btn=dialog.findViewById(R.id.inc_amnt_btn);
-            dec_amnt_btn=dialog.findViewById(R.id.dec_amnt_bnt);
+            paid_amnt_layout=dialog.findViewById(R.id.paid_amnt_layout);
+            rem_amnt_layout=dialog.findViewById(R.id.rem_amnt_layout);
+            paid_amnt_btn=dialog.findViewById(R.id.paid_amnt_btn);
+            rem_amnt_btn=dialog.findViewById(R.id.rem_amnt_btn);
+            update=dialog.findViewById(R.id.add);
+            update.setEnabled(false);
+            cancel=dialog.findViewById(R.id.cancel);
+            payment_desc=dialog.findViewById(R.id.new_amnt_desc);
+
+        }
+
+    }
+
+
+
+    class AccountEntryHolder{
+
+
+        EditText account_name;
+        EditText total_amnt;
+        Button add;
+        Button cancel;
+
+
+
+        AccountEntryHolder(Dialog dialog){
+
+            account_name=dialog.findViewById(R.id.account_name);
+            total_amnt=dialog.findViewById(R.id.net_amnt);
             add=dialog.findViewById(R.id.add);
             add.setEnabled(false);
             cancel=dialog.findViewById(R.id.cancel);
@@ -363,10 +531,36 @@ public class LendAccountFragment extends Fragment {
 
     }
 
+
+    class AccountHistoryHolder{
+
+
+        TextView account_name;
+        TextView total_amnt;
+        RecyclerView history_list;
+        TextView paid_amnt;
+        TextView remaining_amnt;
+
+
+
+        AccountHistoryHolder(Dialog dialog){
+
+          total_amnt=dialog.findViewById(R.id.total_amnt);
+          account_name=dialog.findViewById(R.id.account_name);
+
+          history_list=dialog.findViewById(R.id.history_list);
+
+          paid_amnt=dialog.findViewById(R.id.paid);
+          remaining_amnt=dialog.findViewById(R.id.remaining);
+
+        }
+
+    }
+
     @Override
     public void onStart() {
         super.onStart();
-        Log.i("ABCD","called start");
+        Log.i(TAG,"called start");
         getAllLendAccounts();
     }
 
@@ -375,21 +569,21 @@ public class LendAccountFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        Log.i("ABCD","called pause");
+        Log.i(TAG,"called pause");
         disposable.clear();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.i("ABCD","called destroy");
+        Log.i(TAG,"called destroy");
         disposable.clear();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.i("ABCD","called stop");
+        Log.i(TAG,"called stop");
         disposable.clear();
     }
 
@@ -400,7 +594,7 @@ public class LendAccountFragment extends Fragment {
                             lendAccounts.clear();
                             lendAccounts.addAll(accounts);
                             listCount.onNext(lendAccounts.size());
-                            adapter.notifyDataSetChanged();
+                            accountAdapter.notifyDataSetChanged();
                         },
                         throwable -> Log.e(TAG, "exception getting accounts"))
         );
@@ -408,9 +602,29 @@ public class LendAccountFragment extends Fragment {
 
     }
 
+
+    void getAllPaymentDetails(int accountId){
+        disposable.add(detailsViewModel.getAllDetails(accountId).subscribeOn(io.reactivex.schedulers.Schedulers.io())
+                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                .subscribe(payments -> {
+                            lendAccountHistory.clear();
+                            lendAccountHistory.addAll(payments);
+
+                            if(historyAdapter!=null) {
+
+                                historyAdapter.notifyDataSetChanged();
+                            }
+                        },
+                        throwable -> Log.e(TAG, "exception getting accounts"))
+        );
+
+
+    }
+
+
     void addLendAccount(Account account){
 
-        disposable.add(accountViewModel.updateUser(account).subscribeOn(io.reactivex.schedulers.Schedulers.io())
+        disposable.add(accountViewModel.addAccount(account).subscribeOn(io.reactivex.schedulers.Schedulers.io())
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
                 .subscribe(()-> {
                     Toast.makeText(getActivity(), " Account Added", Toast.LENGTH_SHORT).show();
@@ -422,14 +636,42 @@ public class LendAccountFragment extends Fragment {
 
     }
 
+    void updateLendAccount(Account account){
+
+        disposable.add(accountViewModel.updateAccount(account).subscribeOn(io.reactivex.schedulers.Schedulers.io())
+                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                .subscribe(()-> {
+                    Toast.makeText(getActivity(), " Account Added", Toast.LENGTH_SHORT).show();
+                }, throwable -> {
+                    Toast.makeText(getActivity(), "Failed to Add Account", Toast.LENGTH_SHORT).show();
+                })
+        );
+
+
+    }
+
+    void addLendPaymentDetails(PaymentDetails paymentDetails){
+
+        disposable.add(detailsViewModel.updatePayments(paymentDetails).subscribeOn(io.reactivex.schedulers.Schedulers.io())
+                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                .subscribe(()-> {
+                    Toast.makeText(getActivity(), " Payment Added", Toast.LENGTH_SHORT).show();
+                }, throwable -> {
+                    Toast.makeText(getActivity(), "Failed to Add Payment", Toast.LENGTH_SHORT).show();
+                })
+        );
+
+
+    }
+
     void deleteLendAccount(Account account){
 
-        disposable.add(accountViewModel.deleteUser(account).subscribeOn(io.reactivex.schedulers.Schedulers.io())
+        disposable.add(accountViewModel.deleteAccount(account).subscribeOn(io.reactivex.schedulers.Schedulers.io())
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
                 .subscribe(()-> {
                     Toast.makeText(getActivity(), " Account Deleted", Toast.LENGTH_SHORT).show();
                     lendAccounts.remove(account);
-                    adapter.notifyDataSetChanged();
+                    accountAdapter.notifyDataSetChanged();
                     listCount.onNext(lendAccounts.size());
                 }, throwable -> {
                     Toast.makeText(getActivity(), "Failed to Delete Account", Toast.LENGTH_SHORT).show();

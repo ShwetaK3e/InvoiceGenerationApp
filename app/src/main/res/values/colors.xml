@@ -34,4 +34,5 @@
 
 
     <color name="activeColor">#FF58CE30</color>
+    <color name="colorbg">#99ccff</color>
 </resources>

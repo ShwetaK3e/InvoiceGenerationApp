@@ -8,13 +8,14 @@ import android.content.Context;
 import com.store.pawan.pawanstore.DAO.AccountDAO;
 import com.store.pawan.pawanstore.DAO.PaymentDetailsDAO;
 import com.store.pawan.pawanstore.entities.Account;
+import com.store.pawan.pawanstore.entities.PaymentDetails;
 
 /**
  * Created by shwetakumar on 9/26/17.
  */
 
 @Database(entities = {
-        Account.class
+        Account.class, PaymentDetails.class
 }, version = 1,exportSchema = false)
 public abstract class PStoreDataBase  extends RoomDatabase{
 
