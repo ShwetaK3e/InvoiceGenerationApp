@@ -54,8 +54,8 @@ public class AddItemFragment extends Fragment {
     EditText total_amnt_1,total_amnt_2,total_amnt_3,total_amnt_4,total_amnt_5;
     EditText gst_amnt_tot;
     EditText total_amnt;
-    EditText total;
-    ImageButton refresh_page;
+    TextView total;
+
 
 
 
@@ -125,7 +125,6 @@ public class AddItemFragment extends Fragment {
         gst_amnt_tot=view.findViewById(R.id.gst_amnt_tot);
         total_amnt=view.findViewById(R.id.total_amnt);
         total=view.findViewById(R.id.total);
-        refresh_page=view.findViewById(R.id.refresh_page);
 
         Observable<CharSequence> gst_perc_1_obv= RxTextView.textChanges(gst_perc_1);
         Observable<CharSequence> gst_perc_2_obv= RxTextView.textChanges(gst_perc_2);
@@ -225,6 +224,7 @@ public class AddItemFragment extends Fragment {
             }else{
                 gst_amnt_4.setText("");
                 total_amnt_4.setText("");
+
             }
         });
 
@@ -246,6 +246,7 @@ public class AddItemFragment extends Fragment {
             }else{
                 gst_amnt_5.setText("");
                 total_amnt_5.setText("");
+                
             }
         });
 
@@ -379,21 +380,20 @@ public class AddItemFragment extends Fragment {
             changeGSTSlab(gst_perc_5);
         });
 
-        refresh_page.setOnClickListener(click->{
 
 
-        });
-
-        refresh_page.setOnClickListener(click->{
-            new AlertDialog.Builder(getActivity(),android.R.style.Theme_Material_Dialog_Alert)
-                    .setTitle("New Bill")
-                    .setMessage("Are you sure you want to delete the current bill?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
-                       refreshBill();
-                    })
-                    .setNegativeButton("No",(dialog, which) -> {
-                          dialog.dismiss();
-                    } ).show();
+        total.setOnClickListener(click->{
+            if(total.getText().length()!=0) {
+                new AlertDialog.Builder(getActivity(), android.R.style.Theme_Material_Dialog_Alert)
+                        .setTitle("New Bill")
+                        .setMessage("Are you sure you want to delete the current bill?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            refreshBill();
+                        })
+                        .setNegativeButton("No", (dialog, which) -> {
+                            dialog.dismiss();
+                        }).show();
+            }
         });
 
         return  view;

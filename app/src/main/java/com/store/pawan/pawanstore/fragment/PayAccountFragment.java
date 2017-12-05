@@ -112,8 +112,8 @@ public class PayAccountFragment extends Fragment {
                 showAddPaymentDialog(payAccounts.get(pos));
             }else if(action.equalsIgnoreCase("delete")){
                 new AlertDialog.Builder(getActivity(),android.R.style.Theme_Material_Dialog_Alert)
-                        .setTitle("New Bill")
-                        .setMessage("Are you sure you want to delete the current bill?")
+                        .setTitle("Delete Account")
+                        .setMessage("Are you sure you want to delete this account?")
                         .setPositiveButton("Yes", (dialog, which) -> {
                             deletePayAccount(payAccounts.get(pos));
                         })
