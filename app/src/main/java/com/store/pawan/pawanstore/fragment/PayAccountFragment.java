@@ -334,7 +334,7 @@ public class PayAccountFragment extends Fragment {
             acc.setPaid_amount(paid_amnt);
             updatePayAccount(acc);
 
-            PaymentDetails details=new PaymentDetails(id,sdf.format(new Date()),amntStatus,update_amnt,desc);
+            PaymentDetails details=new PaymentDetails(id,sdf.format(new Date()),amntStatus,update_amnt,desc.length()!=0?desc:"No Description.");
             addPayPaymentDetails(details);
 
 
@@ -446,9 +446,9 @@ public class PayAccountFragment extends Fragment {
         final PayAccountFragment.AccountHistoryHolder holder=new PayAccountFragment.AccountHistoryHolder(account_history_dialog);
 
         holder.account_name.setText(account.getName().toUpperCase());
-        holder.total_amnt.setText("Rs. "+String.valueOf(account.getAmount()));
-        holder.paid_amnt.setText("Rs. "+String.valueOf(account.getPaid_amount()));
-        holder.remaining_amnt.setText("Rs. "+String.valueOf(account.getAmount()-account.getPaid_amount()));
+        holder.total_amnt.setText("Rs. "+String.format("%.1f",account.getAmount()));
+        holder.paid_amnt.setText("Rs. "+String.format("%.1f",account.getPaid_amount()));
+        holder.remaining_amnt.setText("Rs. "+String.format("%.1f",(account.getAmount()-account.getPaid_amount())));
 
         historyAdapter=new AccountHistoryAdapter(getContext(),payAccountHistory);
         getAllPaymentDetails(account.getId());

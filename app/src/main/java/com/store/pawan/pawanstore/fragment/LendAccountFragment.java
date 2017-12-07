@@ -310,9 +310,9 @@ public class LendAccountFragment extends Fragment {
 
 
             holder.account_name.setText(acc.getName());
-            holder.total_amnt.setText(String.valueOf(acc.getAmount()));
-            holder.paid_amnt.setText(String.valueOf(acc.getPaid_amount()));
-            holder.remaining_amnt.setText(String.valueOf(acc.getAmount()-acc.getPaid_amount()));
+            holder.total_amnt.setText(String.format("%.1f",acc.getAmount()));
+            holder.paid_amnt.setText(String.format("%.1f",acc.getPaid_amount()));
+            holder.remaining_amnt.setText(String.format("%.1f",acc.getAmount()-acc.getPaid_amount()));
 
 
 
@@ -337,7 +337,7 @@ public class LendAccountFragment extends Fragment {
             acc.setPaid_amount(paid_amnt);
             updateLendAccount(acc);
 
-            PaymentDetails details=new PaymentDetails(id,sdf.format(new Date()),amntStatus,update_amnt,desc);
+            PaymentDetails details=new PaymentDetails(id,sdf.format(new Date()),amntStatus,update_amnt,desc.length()!=0?desc:"No Description.");
             addLendPaymentDetails(details);
 
 
@@ -449,9 +449,9 @@ public class LendAccountFragment extends Fragment {
         final LendAccountFragment.AccountHistoryHolder holder=new LendAccountFragment.AccountHistoryHolder(account_history_dialog);
 
         holder.account_name.setText(account.getName().toUpperCase());
-        holder.total_amnt.setText("Rs. "+String.valueOf(account.getAmount()));
-        holder.paid_amnt.setText("Rs. "+String.valueOf(account.getPaid_amount()));
-        holder.remaining_amnt.setText("Rs. "+String.valueOf(account.getAmount()-account.getPaid_amount()));
+        holder.total_amnt.setText("Rs. "+String.format("%.1f",account.getAmount()));
+        holder.paid_amnt.setText("Rs. "+String.format("%.1f",account.getPaid_amount()));
+        holder.remaining_amnt.setText("Rs. "+String.format("%.1f",(account.getAmount()-account.getPaid_amount())));
 
         historyAdapter=new AccountHistoryAdapter(getContext(),lendAccountHistory);
         getAllPaymentDetails(account.getId());

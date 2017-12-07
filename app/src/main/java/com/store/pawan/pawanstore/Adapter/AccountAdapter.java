@@ -51,8 +51,10 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
         Glide.with(context).load(Uri.parse("android.resource://com.store.pawan.pawanstore/drawable/"+ R.drawable.ic_guitar).toString()).into(holder.acc_img);
         holder.acc_name.setText(accounts.get(position).getName());
-        holder.amount.setText("Rs. "+String.valueOf(accounts.get(position).getAmount()));
+        holder.amount.setText("Rs. "+String.format("%.1f",accounts.get(position).getAmount()));
         holder.itemView.setOnClickListener(view -> onMyItemClickListener.onClick(position,null));
+
+
 
         holder.acc_del_layout.setOnClickListener(click->{
             onMyItemClickListener.onClick(position,"delete");
@@ -62,10 +64,13 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
             onMyItemClickListener.onClick(position,"delete");
         });
 
-        holder.acc_img.setOnClickListener(click->
-        {
+        holder.acc_img_layout.setOnClickListener(click-> {
             onMyItemClickListener.onClick(position,"history");
 
+        });
+
+        holder.acc_img.setOnClickListener(click-> {
+            onMyItemClickListener.onClick(position,"history");
         });
     }
 
@@ -76,6 +81,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        LinearLayout acc_img_layout;
         ImageView acc_img;
         TextView acc_name;
         TextView amount;
@@ -86,6 +92,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
 
         public ViewHolder(View itemView) {
             super(itemView);
+            acc_img_layout=itemView.findViewById(R.id.accnt_img_layout);
             acc_img=itemView.findViewById(R.id.acc_img);
             acc_name=(PStoreTextViewBold)itemView.findViewById(R.id.acc_name);
             amount=(PStoreTextViewBold)itemView.findViewById(R.id.amnt);

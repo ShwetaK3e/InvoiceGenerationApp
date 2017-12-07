@@ -156,8 +156,8 @@ public class AddItemFragment extends Fragment {
                 int qnty= Integer.parseInt(count_1.getText().toString());
                 double gst_amount=rate*qnty*gst/100;
                 double tot_amount=rate*qnty;
-                gst_amnt_1.setText(String.format("%.1f", gst_amount));
-                total_amnt_1.setText(String.format("%.1f", (tot_amount-gst_amount*2)));
+                gst_amnt_1.setText(String.format("%.2f", gst_amount));
+                total_amnt_1.setText(String.format("%.2f", (tot_amount-gst_amount*2)));
             }else{
                 gst_amnt_1.setText("");
                 total_amnt_1.setText("");
@@ -176,8 +176,8 @@ public class AddItemFragment extends Fragment {
                 int qnty= Integer.parseInt(count_2.getText().toString());
                 double gst_amount=rate*qnty*gst/100;
                 double tot_amount=rate*qnty;
-                gst_amnt_2.setText(String.format("%.1f", gst_amount));
-                total_amnt_2.setText(String.format("%.1f", (tot_amount-gst_amount*2)));
+                gst_amnt_2.setText(String.format("%.2f", gst_amount));
+                total_amnt_2.setText(String.format("%.2f", (tot_amount-gst_amount*2)));
             }else{
                 gst_amnt_2.setText("");
                 total_amnt_2.setText("");
@@ -198,8 +198,8 @@ public class AddItemFragment extends Fragment {
                 int qnty= Integer.parseInt(count_3.getText().toString());
                 double gst_amount=rate*qnty*gst/100;
                 double tot_amount=rate*qnty;
-                gst_amnt_3.setText(String.format("%.1f", gst_amount));
-                total_amnt_3.setText(String.format("%.1f", (tot_amount-gst_amount*2)));
+                gst_amnt_3.setText(String.format("%.2f", gst_amount));
+                total_amnt_3.setText(String.format("%.2f", (tot_amount-gst_amount*2)));
             }else{
                 gst_amnt_3.setText("");
                 total_amnt_3.setText("");
@@ -219,8 +219,8 @@ public class AddItemFragment extends Fragment {
                 int qnty= Integer.parseInt(count_4.getText().toString());
                 double gst_amount=rate*qnty*gst/100;
                 double tot_amount=rate*qnty;
-                gst_amnt_4.setText(String.format("%.1f", gst_amount));
-                total_amnt_4.setText(String.format("%.1f", (tot_amount-gst_amount*2)));
+                gst_amnt_4.setText(String.format("%.2f", gst_amount));
+                total_amnt_4.setText(String.format("%.2f", (tot_amount-gst_amount*2)));
             }else{
                 gst_amnt_4.setText("");
                 total_amnt_4.setText("");
@@ -241,12 +241,12 @@ public class AddItemFragment extends Fragment {
                 int qnty= Integer.parseInt(count_5.getText().toString());
                 double gst_amount=rate*qnty*gst/100;
                 double tot_amount=rate*qnty;
-                gst_amnt_5.setText(String.format("%.1f", gst_amount));
-                total_amnt_5.setText(String.format("%.1f", (tot_amount-gst_amount*2)));
+                gst_amnt_5.setText(String.format("%.2f", gst_amount));
+                total_amnt_5.setText(String.format("%.2f", (tot_amount-gst_amount*2)));
             }else{
                 gst_amnt_5.setText("");
                 total_amnt_5.setText("");
-                
+
             }
         });
 
@@ -270,7 +270,9 @@ public class AddItemFragment extends Fragment {
                 float t3=total_amnt_3.getText().length()!=0?Float.parseFloat(total_amnt_3.getText().toString()):0.0f;
                 float t4=total_amnt_4.getText().length()!=0?Float.parseFloat(total_amnt_4.getText().toString()):0.0f;
                 float t5=total_amnt_5.getText().length()!=0?Float.parseFloat(total_amnt_5.getText().toString()):0.0f;
-                total_amnt.setText(String.format("%.1f",(t1+t2+t3+t4+t5)));
+                total_amnt.setText(String.format("%.2f",(t1+t2+t3+t4+t5)));
+            }else{
+                total_amnt.setText("");
             }
         });
 
@@ -296,7 +298,10 @@ public class AddItemFragment extends Fragment {
                 float t3=gst_amnt_3.getText().length()!=0?Float.parseFloat(gst_amnt_3.getText().toString()):0.0f;
                 float t4=gst_amnt_4.getText().length()!=0?Float.parseFloat(gst_amnt_4.getText().toString()):0.0f;
                 float t5=gst_amnt_5.getText().length()!=0?Float.parseFloat(gst_amnt_5.getText().toString()):0.0f;
-                gst_amnt_tot.setText(String.format("%.1f",(t1+t2+t3+t4+t5)));
+                gst_amnt_tot.setText(String.format("%.2f",(t1+t2+t3+t4+t5)));
+            }else{
+                gst_amnt_tot.setText("");
+
             }
         });
 
@@ -311,7 +316,9 @@ public class AddItemFragment extends Fragment {
             if(aBoolean){
                 float t1=gst_amnt_tot.getText().length()!=0?Float.parseFloat(gst_amnt_tot.getText().toString()):0.0f;
                 float t2=total_amnt.getText().length()!=0?Float.parseFloat(total_amnt.getText().toString()):0.0f;
-                total.setText("Rs. "+String.format("%.1f",(t1*2+t2)));
+                total.setText("Rs. "+String.format("%.2f",(t1*2+t2)));
+            }else{
+                total.setText("");
             }
         });
 

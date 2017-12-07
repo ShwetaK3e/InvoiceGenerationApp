@@ -365,10 +365,6 @@
                     android:padding="5dp"
                     android:id="@+id/rem_amnt_btn"/>
 
-
-
-
-
             </LinearLayout>
 
 

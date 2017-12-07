@@ -21,11 +21,12 @@
             android:layout_weight="1"
             android:weightSum="1">
 
-        <LinearLayout
+            <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="0.2"
             android:layout_height="wrap_content"
-            android:gravity="center">
+            android:gravity="center"
+            android:id="@+id/accnt_img_layout">
 
             <ImageButton
                 android:layout_width="40dp"
@@ -39,11 +40,9 @@
                 android:id="@+id/acc_img"/>
         </LinearLayout>
 
-
-
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="0.35"
+                android:layout_weight="0.2"
                 android:layout_height="match_parent"
                 android:gravity="left|center_vertical">
 
@@ -66,12 +65,9 @@
 
             </LinearLayout>
 
-
-
-
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="0.35"
+                android:layout_weight="0.4"
                 android:layout_height="match_parent"
                 android:gravity="center">
 
@@ -92,14 +88,15 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="0.1"
+                android:layout_weight="0.2"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:id="@+id/acc_del_layout">
+                android:id="@+id/acc_del_layout"
+                android:padding="8dp">
 
                 <ImageButton
-                    android:layout_width="17dp"
-                    android:layout_height="17dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:src="@drawable/ic_delete"
                     android:background="@android:color/transparent"
                     android:scaleType="fitCenter"
